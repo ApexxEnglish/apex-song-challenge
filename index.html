@@ -346,7 +346,7 @@ linear-gradient(180deg,var(--navy) 0 36%,var(--paper) 36% 100%)}
           <h1>Hello</h1>
           <p>
             YouTube captions stay off. The lyric area below is controlled by Apex,
-            and selected words become listening gaps. A correct answer stays paused until you press Continue.
+            and selected words become listening gaps. The full challenge line plays first. About 2.5 seconds later the video pauses. A correct answer stays paused until you press Continue.
           </p>
           <button class="primary" id="startBtn">Start Challenge</button>
         </div>
@@ -400,7 +400,7 @@ linear-gradient(180deg,var(--navy) 0 36%,var(--paper) 36% 100%)}
     <span>YouTube captions: off</span>
     <span>Inline typing</span>
     <span>Auto pause</span>
-    <span>Hard pause on gaps</span><span>24-gap engine ready</span>
+    <span>Full line first</span><span>2.5s delayed pause</span><span>Hard pause on gaps</span><span>24-gap engine ready</span>
   </section>
 </main>
 </div>
@@ -416,15 +416,17 @@ const CONFIG = {
   */
   cues: [
     {
-      replayFrom: 103.2,
-      pauseAt: 108.0,
+      replayFrom: 102.8,
+      lineEndsAt: 109.1,
+      pauseAt: 111.6,
       before: "Hello, can you",
       answer: "hear",
       after: "me?"
     },
     {
-      replayFrom: 136.8,
-      pauseAt: 145.0,
+      replayFrom: 136.4,
+      lineEndsAt: 144.7,
+      pauseAt: 147.2,
       before: "Hello from the",
       answer: "other",
       after: "side"
@@ -497,7 +499,7 @@ function showListening(){
   nextLine.textContent = "";
 
   currentLine.innerHTML =
-    `<div class="listen-state"><small>Listening</small>Follow the song. A gap will appear automatically.</div>`;
+    `<div class="listen-state"><small>Listening</small>Listen to the full line. The gap appears after the line finishes.</div>`;
 
   feedback.textContent = "";
   feedback.className = "feedback neutral";
@@ -597,7 +599,7 @@ function startLoop(){
     const secondsLeft = cue.pauseAt - t;
 
     if(secondsLeft > 0 && secondsLeft <= 8){
-      state.textContent = `Challenge in ${Math.ceil(secondsLeft)}s`;
+      state.textContent = secondsLeft <= 3 ? "Get ready" : "Listening";
     }else if(secondsLeft > 8){
       state.textContent = "Playing";
     }
@@ -625,7 +627,7 @@ function openCue(){
     }, 120);
   }catch(e){}
 
-  state.textContent = `Gap ${cueIndex + 1} of ${CONFIG.cues.length}`;
+  state.textContent = `Gap ${cueIndex + 1} of ${CONFIG.cues.length} — answer from what you heard`;
 
   prevLine.textContent = "";
   nextLine.textContent = "";
