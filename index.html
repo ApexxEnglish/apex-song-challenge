@@ -138,10 +138,31 @@ button{cursor:pointer}
   height:100%;
 }
 
+.caption-mask{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:34%;
+  z-index:6;
+  display:none;
+  pointer-events:none;
+  background:linear-gradient(
+    to bottom,
+    rgba(5,18,31,0),
+    rgba(5,18,31,.74) 42%,
+    rgba(5,18,31,.96) 100%
+  );
+}
+
+.caption-mask.show{
+  display:block;
+}
+
 .facade{
   position:absolute;
   inset:0;
-  z-index:5;
+  z-index:7;
   display:flex;
   align-items:flex-end;
   padding:22px;
@@ -269,10 +290,6 @@ button{cursor:pointer}
   line-height:1.25;
 }
 
-#prevLine,#nextLine{
-  display:none;
-}
-
 .inline-input{
   display:inline-block;
   min-width:130px;
@@ -308,31 +325,6 @@ button{cursor:pointer}
 
 .feedback.good{color:var(--good)}
 .feedback.bad{color:var(--bad)}
-
-.pause-overlay{
-  position:absolute;
-  inset:0;
-  z-index:7;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  background:rgba(5,18,31,.45);
-}
-
-.pause-overlay.show{display:flex}
-
-.pause-card{
-  background:#fff;
-  border-radius:13px;
-  padding:14px;
-  text-align:center;
-}
-
-.pause-card strong{
-  display:block;
-  color:var(--navy);
-  margin-bottom:8px;
-}
 
 .footer-note{
   text-align:center;
@@ -383,6 +375,7 @@ button{cursor:pointer}
 <main class="shell">
 
   <header class="top">
+
     <div class="brand">
       <div class="logo"></div>
       <div>
@@ -393,11 +386,12 @@ button{cursor:pointer}
 
     <div class="stats">
       <div class="stat"><span>Score</span><strong id="score">0</strong></div>
-      <div class="stat"><span>Gaps</span><strong id="gaps">0/24</strong></div>
+      <div class="stat"><span>Gaps</span><strong id="gaps">0/9</strong></div>
       <div class="stat"><span>Hits</span><strong id="hits">0</strong></div>
       <div class="stat"><span>Fails</span><strong id="fails">0</strong></div>
       <div class="stat"><span>Bonus</span><strong id="bonus">x1</strong></div>
     </div>
+
   </header>
 
   <section class="game">
@@ -408,12 +402,7 @@ button{cursor:pointer}
 
         <div id="player"></div>
 
-        <div class="pause-overlay" id="pauseOverlay">
-          <div class="pause-card">
-            <strong>Challenge paused</strong>
-            <button class="btn btn-primary" id="resumeBtn">Resume</button>
-          </div>
-        </div>
+        <div class="caption-mask" id="captionMask"></div>
 
         <div class="facade" id="facade">
           <div>
@@ -429,6 +418,7 @@ button{cursor:pointer}
       </div>
 
       <div class="player-controls">
+
         <button class="btn" id="pauseBtn" disabled>Pause</button>
         <button class="btn" id="restartBtn" disabled>Restart</button>
 
@@ -443,6 +433,7 @@ button{cursor:pointer}
         >
 
         <span id="time">0:00</span>
+
       </div>
 
     </div>
@@ -451,13 +442,13 @@ button{cursor:pointer}
 
       <div class="lesson-head">
         <div id="state">Ready</div>
-        <div class="lesson-note">Listen → answer → continue</div>
+        <div class="lesson-note">Listen → gap → replay if needed → answer</div>
       </div>
 
       <div class="lyric-window">
-        <div id="prevLine"></div>
-        <div id="currentLine">Press Start Challenge to begin.</div>
-        <div id="nextLine"></div>
+        <div id="currentLine">
+          Press Start Challenge to begin.
+        </div>
       </div>
 
       <div class="actions">
@@ -472,7 +463,7 @@ button{cursor:pointer}
     </div>
 
     <div class="footer-note">
-      Full line first · Stops at line end · 24 listening gaps
+      Full line first · Gap stays visible on replay · spaced challenges
     </div>
 
   </section>
@@ -481,10 +472,12 @@ button{cursor:pointer}
 
 <script>
 const CONFIG = {
-  videoId: "YQHsXMglC9A",
-  approxDuration: 367,
 
-  cues: [
+  videoId:"YQHsXMglC9A",
+  approxDuration:367,
+
+  cues:[
+
     {
       replayFrom:83,
       lineEndsAt:91,
@@ -492,34 +485,7 @@ const CONFIG = {
       answer:"wondering",
       after:"if after all these years you'd like to meet"
     },
-    {
-      replayFrom:90,
-      lineEndsAt:96.5,
-      before:"To go over",
-      answer:"everything",
-      after:""
-    },
-    {
-      replayFrom:95,
-      lineEndsAt:101.5,
-      before:"They say that time's",
-      answer:"supposed",
-      after:"to heal you"
-    },
-    {
-      replayFrom:100,
-      lineEndsAt:105,
-      before:"But I ain't done much",
-      answer:"healing",
-      after:""
-    },
-    {
-      replayFrom:104,
-      lineEndsAt:110,
-      before:"Hello, can you",
-      answer:"hear",
-      after:"me?"
-    },
+
     {
       replayFrom:109,
       lineEndsAt:116.5,
@@ -527,27 +493,7 @@ const CONFIG = {
       answer:"dreaming",
       after:"about who we used to be"
     },
-    {
-      replayFrom:115,
-      lineEndsAt:121.5,
-      before:"When we were",
-      answer:"younger",
-      after:"and free"
-    },
-    {
-      replayFrom:120,
-      lineEndsAt:128.5,
-      before:"I've",
-      answer:"forgotten",
-      after:"how it felt before the world fell at our feet"
-    },
-    {
-      replayFrom:127,
-      lineEndsAt:133.5,
-      before:"There's such a",
-      answer:"difference",
-      after:"between us"
-    },
+
     {
       replayFrom:132,
       lineEndsAt:138.5,
@@ -555,20 +501,7 @@ const CONFIG = {
       answer:"million",
       after:"miles"
     },
-    {
-      replayFrom:140,
-      lineEndsAt:147,
-      before:"Hello from the",
-      answer:"other",
-      after:"side"
-    },
-    {
-      replayFrom:146,
-      lineEndsAt:153.5,
-      before:"I must've called a",
-      answer:"thousand",
-      after:"times"
-    },
+
     {
       replayFrom:152,
       lineEndsAt:160,
@@ -576,27 +509,7 @@ const CONFIG = {
       answer:"sorry",
       after:"for everything that I've done"
     },
-    {
-      replayFrom:158,
-      lineEndsAt:165.5,
-      before:"But when I call you",
-      answer:"never",
-      after:"seem to be home"
-    },
-    {
-      replayFrom:165,
-      lineEndsAt:172.5,
-      before:"Hello from the",
-      answer:"outside",
-      after:""
-    },
-    {
-      replayFrom:171,
-      lineEndsAt:178.5,
-      before:"At least I can say that I've",
-      answer:"tried",
-      after:""
-    },
+
     {
       replayFrom:179,
       lineEndsAt:186.5,
@@ -604,13 +517,7 @@ const CONFIG = {
       answer:"breaking",
       after:"your heart"
     },
-    {
-      replayFrom:186,
-      lineEndsAt:194.5,
-      before:"It",
-      answer:"clearly",
-      after:"doesn't tear you apart anymore"
-    },
+
     {
       replayFrom:201,
       lineEndsAt:208.5,
@@ -618,6 +525,7 @@ const CONFIG = {
       answer:"typical",
       after:"of me to talk about myself"
     },
+
     {
       replayFrom:219,
       lineEndsAt:228,
@@ -625,6 +533,7 @@ const CONFIG = {
       answer:"secret",
       after:"that the both of us are running out of time"
     },
+
     {
       replayFrom:270,
       lineEndsAt:276.5,
@@ -632,120 +541,126 @@ const CONFIG = {
       answer:"heart",
       after:""
     },
-    {
-      replayFrom:275,
-      lineEndsAt:283.5,
-      before:"It clearly doesn't tear you",
-      answer:"apart",
-      after:"anymore"
-    },
+
     {
       replayFrom:310,
       lineEndsAt:318.5,
       before:"I must've called a thousand",
       answer:"times",
       after:""
-    },
-    {
-      replayFrom:315,
-      lineEndsAt:325.5,
-      before:"To tell you I'm sorry for everything that I've",
-      answer:"done",
-      after:""
     }
+
   ]
 };
 
 let player;
 let loop;
 
-let cueIndex = 0;
-let cueOpen = false;
+let cueIndex=0;
+let cueOpen=false;
+let replayingCue=false;
 
-let solved = 0;
-let hits = 0;
-let fails = 0;
-let hints = 0;
-let score = 0;
-let bonus = 1;
+let solved=0;
+let hits=0;
+let fails=0;
+let hints=0;
+let score=0;
+let bonus=1;
 
-const $ = id => document.getElementById(id);
+const $=id=>document.getElementById(id);
 
-const startBtn = $("startBtn");
-const facade = $("facade");
+const facade=$("facade");
+const startBtn=$("startBtn");
 
-const pauseBtn = $("pauseBtn");
-const restartBtn = $("restartBtn");
+const pauseBtn=$("pauseBtn");
+const restartBtn=$("restartBtn");
 
-const progress = $("progress");
-const time = $("time");
+const progress=$("progress");
+const time=$("time");
 
-const state = $("state");
-const currentLine = $("currentLine");
+const state=$("state");
+const currentLine=$("currentLine");
 
-const checkBtn = $("checkBtn");
-const replayBtn = $("replayBtn");
-const hintBtn = $("hintBtn");
-const skipBtn = $("skipBtn");
+const checkBtn=$("checkBtn");
+const replayBtn=$("replayBtn");
+const hintBtn=$("hintBtn");
+const skipBtn=$("skipBtn");
 
-const feedback = $("feedback");
-
-const pauseOverlay = $("pauseOverlay");
-const resumeBtn = $("resumeBtn");
+const feedback=$("feedback");
+const captionMask=$("captionMask");
 
 function formatTime(sec){
-  const m = Math.floor(sec / 60);
-  const s = Math.floor(sec % 60).toString().padStart(2,"0");
+
+  const m=Math.floor(sec/60);
+
+  const s=Math.floor(sec%60)
+    .toString()
+    .padStart(2,"0");
+
   return `${m}:${s}`;
 }
 
 function updateStats(){
-  $("score").textContent = score;
-  $("gaps").textContent = `${solved}/${CONFIG.cues.length}`;
-  $("hits").textContent = hits;
-  $("fails").textContent = fails;
-  $("bonus").textContent = `x${bonus}`;
+
+  $("score").textContent=score;
+
+  $("gaps").textContent=
+    `${solved}/${CONFIG.cues.length}`;
+
+  $("hits").textContent=hits;
+  $("fails").textContent=fails;
+  $("bonus").textContent=`x${bonus}`;
 }
 
 function setTools(active){
-  checkBtn.disabled = !active;
-  replayBtn.disabled = !active;
-  hintBtn.disabled = !active;
-  skipBtn.disabled = !active;
+
+  checkBtn.disabled=!active;
+  replayBtn.disabled=!active;
+  hintBtn.disabled=!active;
+  skipBtn.disabled=!active;
 }
 
 function showListening(){
-  currentLine.textContent =
-    "Listen carefully — the gap appears when the line ends.";
 
-  feedback.textContent = "";
+  currentLine.textContent=
+    "Keep listening — the next challenge will appear soon.";
+
+  feedback.textContent="";
+
+  captionMask.classList.remove("show");
 }
 
 function loadYouTube(){
 
   if(window.YT && YT.Player){
+
     createPlayer();
+
     return;
   }
 
-  const script = document.createElement("script");
-  script.src = "https://www.youtube.com/iframe_api";
+  const script=document.createElement("script");
+
+  script.src=
+    "https://www.youtube.com/iframe_api";
+
   document.head.appendChild(script);
 
-  state.textContent = "Loading";
+  state.textContent="Loading";
 }
 
-window.onYouTubeIframeAPIReady = createPlayer;
+window.onYouTubeIframeAPIReady=createPlayer;
 
 function createPlayer(){
 
   if(player) return;
 
-  player = new YT.Player("player",{
+  player=new YT.Player("player",{
 
     videoId:CONFIG.videoId,
 
     playerVars:{
+
       playsinline:1,
       controls:0,
       disablekb:1,
@@ -753,6 +668,7 @@ function createPlayer(){
       cc_load_policy:0,
       fs:0,
       iv_load_policy:3
+
     },
 
     events:{
@@ -761,26 +677,24 @@ function createPlayer(){
 
         facade.classList.add("hidden");
 
-        pauseBtn.disabled = false;
-        restartBtn.disabled = false;
-        progress.disabled = false;
+        pauseBtn.disabled=false;
+        restartBtn.disabled=false;
+        progress.disabled=false;
 
-        state.textContent = "Playing";
+        state.textContent="Playing";
 
         showListening();
 
         try{
+
           event.target.unloadModule("captions");
           event.target.unloadModule("cc");
+
         }catch(e){}
 
         event.target.playVideo();
 
         startLoop();
-      },
-
-      onError:event=>{
-        state.textContent = `YouTube error ${event.data}`;
       }
     }
   });
@@ -790,35 +704,58 @@ function startLoop(){
 
   clearInterval(loop);
 
-  loop = setInterval(()=>{
+  loop=setInterval(()=>{
 
     if(!player || !player.getCurrentTime) return;
 
-    const t = player.getCurrentTime();
+    const t=player.getCurrentTime();
 
-    time.textContent = formatTime(t);
+    time.textContent=formatTime(t);
 
-    progress.value = t;
+    progress.value=t;
+
+    if(cueOpen && replayingCue){
+
+      const cue=CONFIG.cues[cueIndex];
+
+      if(cue && t>=cue.lineEndsAt){
+
+        replayingCue=false;
+
+        player.seekTo(cue.lineEndsAt,true);
+        player.pauseVideo();
+
+        state.textContent=
+          `Gap ${cueIndex+1} of ${CONFIG.cues.length}`;
+
+        feedback.textContent=
+          "Replay finished. Type your answer.";
+
+        const input=$("gapInput");
+
+        if(input) input.focus();
+      }
+
+      return;
+    }
 
     if(cueOpen){
 
-      try{
-        player.pauseVideo();
-      }catch(e){}
+      player.pauseVideo();
 
       return;
     }
 
-    if(cueIndex >= CONFIG.cues.length){
+    if(cueIndex>=CONFIG.cues.length){
 
-      state.textContent = "Challenge complete";
+      state.textContent="Challenge complete";
 
       return;
     }
 
-    const cue = CONFIG.cues[cueIndex];
+    const cue=CONFIG.cues[cueIndex];
 
-    if(t >= cue.lineEndsAt){
+    if(t>=cue.lineEndsAt){
 
       openCue();
     }
@@ -828,57 +765,56 @@ function startLoop(){
 
 function openCue(){
 
-  const cue = CONFIG.cues[cueIndex];
+  const cue=CONFIG.cues[cueIndex];
 
-  cueOpen = true;
+  cueOpen=true;
+  replayingCue=false;
+
+  captionMask.classList.add("show");
 
   player.seekTo(cue.lineEndsAt,true);
   player.pauseVideo();
 
-  setTimeout(()=>{
-    try{
-      player.seekTo(cue.lineEndsAt,true);
-      player.pauseVideo();
-    }catch(e){}
-  },100);
+  state.textContent=
+    `Gap ${cueIndex+1} of ${CONFIG.cues.length}`;
 
-  state.textContent =
-    `Gap ${cueIndex + 1} of ${CONFIG.cues.length}`;
+  currentLine.innerHTML=
 
-  currentLine.innerHTML =
     `${escapeHtml(cue.before)} ` +
+
     `<input
       id="gapInput"
       class="inline-input"
       autocomplete="off"
       spellcheck="false"
-      aria-label="Missing word"
     >` +
+
     ` ${escapeHtml(cue.after)}`;
 
   setTools(true);
 
-  checkBtn.textContent = "Check";
-  checkBtn.dataset.mode = "check";
+  checkBtn.textContent="Check";
+  checkBtn.dataset.mode="check";
 
-  const input = $("gapInput");
+  feedback.textContent="";
+
+  const input=$("gapInput");
 
   input.focus();
 
   input.addEventListener("keydown",e=>{
 
-    if(e.key === "Enter"){
+    if(e.key==="Enter"){
 
       e.preventDefault();
 
       checkAnswer();
     }
   });
-
-  feedback.textContent = "";
 }
 
 function normalize(value){
+
   return value
     .trim()
     .toLowerCase()
@@ -889,18 +825,22 @@ function checkAnswer(){
 
   if(!cueOpen) return;
 
-  if(checkBtn.dataset.mode === "continue"){
+  if(checkBtn.dataset.mode==="continue"){
 
     cueIndex++;
-    cueOpen = false;
-    hints = 0;
 
-    checkBtn.textContent = "Check";
-    checkBtn.dataset.mode = "check";
+    cueOpen=false;
+    replayingCue=false;
+    hints=0;
+
+    captionMask.classList.remove("show");
 
     setTools(false);
 
-    state.textContent = "Playing";
+    checkBtn.textContent="Check";
+    checkBtn.dataset.mode="check";
+
+    state.textContent="Playing";
 
     showListening();
 
@@ -909,65 +849,70 @@ function checkAnswer(){
     return;
   }
 
-  const cue = CONFIG.cues[cueIndex];
+  const cue=CONFIG.cues[cueIndex];
 
-  const input = $("gapInput");
+  const input=$("gapInput");
 
   if(!input) return;
 
-  const value = normalize(input.value);
+  const value=normalize(input.value);
 
   if(!value){
 
-    feedback.className = "feedback bad";
-    feedback.textContent = "Type the missing word.";
+    feedback.className="feedback bad";
+    feedback.textContent="Type the missing word.";
 
     return;
   }
 
-  if(value === normalize(cue.answer)){
+  if(value===normalize(cue.answer)){
 
     hits++;
     solved++;
 
-    const points =
-      hints === 0
-        ? 100
-        : Math.max(40,100 - hints * 25);
+    const points=
+      hints===0
+        ?100
+        :Math.max(40,100-hints*25);
 
-    score += Math.round(points * bonus);
+    score+=Math.round(points*bonus);
 
-    bonus = Math.min(4,bonus + 1);
+    bonus=Math.min(4,bonus+1);
 
-    currentLine.innerHTML =
+    currentLine.innerHTML=
+
       `${escapeHtml(cue.before)} ` +
+
       `<strong>${escapeHtml(cue.answer)}</strong>` +
+
       ` ${escapeHtml(cue.after)}`;
 
-    replayBtn.disabled = true;
-    hintBtn.disabled = true;
-    skipBtn.disabled = true;
+    replayBtn.disabled=true;
+    hintBtn.disabled=true;
+    skipBtn.disabled=true;
 
-    checkBtn.disabled = false;
-    checkBtn.textContent = "Continue";
-    checkBtn.dataset.mode = "continue";
+    checkBtn.disabled=false;
 
-    feedback.className = "feedback good";
-    feedback.textContent = "Correct.";
+    checkBtn.textContent="Continue";
+    checkBtn.dataset.mode="continue";
 
-    state.textContent = "Correct — press Continue";
+    feedback.className="feedback good";
+    feedback.textContent="Correct.";
+
+    state.textContent=
+      "Correct — press Continue";
 
     updateStats();
 
   }else{
 
     fails++;
-    bonus = 1;
+    bonus=1;
 
     updateStats();
 
-    feedback.className = "feedback bad";
-    feedback.textContent = "Try again.";
+    feedback.className="feedback bad";
+    feedback.textContent="Try again.";
 
     input.select();
   }
@@ -975,59 +920,72 @@ function checkAnswer(){
 
 function replayCue(){
 
-  if(cueIndex >= CONFIG.cues.length) return;
+  if(cueIndex>=CONFIG.cues.length) return;
 
-  const cue = CONFIG.cues[cueIndex];
+  const cue=CONFIG.cues[cueIndex];
 
-  cueOpen = false;
+  cueOpen=true;
+  replayingCue=true;
 
-  setTools(false);
+  captionMask.classList.add("show");
 
-  state.textContent = "Listening again";
+  state.textContent=
+    "Listening again — gap stays on screen";
 
-  showListening();
+  feedback.className="feedback";
+
+  feedback.textContent=
+    "Listen to the same line again.";
+
+  setTools(true);
 
   player.seekTo(cue.replayFrom,true);
-  player.playVideo();
+
+  setTimeout(()=>{
+
+    player.playVideo();
+
+  },100);
 }
 
 function giveHint(){
 
-  if(cueIndex >= CONFIG.cues.length) return;
+  if(cueIndex>=CONFIG.cues.length) return;
 
-  const cue = CONFIG.cues[cueIndex];
+  const cue=CONFIG.cues[cueIndex];
 
   hints++;
-  bonus = 1;
+  bonus=1;
 
   updateStats();
 
-  if(hints === 1){
+  if(hints===1){
 
-    feedback.className = "feedback";
-    feedback.textContent =
+    feedback.textContent=
       `${cue.answer.length} letters`;
 
   }else{
 
-    feedback.className = "feedback";
-    feedback.textContent =
+    feedback.textContent=
       `Starts with ${cue.answer[0].toUpperCase()}`;
   }
 }
 
 function skipCue(){
 
-  if(cueIndex >= CONFIG.cues.length) return;
+  if(cueIndex>=CONFIG.cues.length) return;
 
-  const cue = CONFIG.cues[cueIndex];
+  const cue=CONFIG.cues[cueIndex];
 
-  currentLine.innerHTML =
+  currentLine.innerHTML=
+
     `${escapeHtml(cue.before)} ` +
+
     `<strong>${escapeHtml(cue.answer)}</strong>` +
+
     ` ${escapeHtml(cue.after)}`;
 
-  bonus = 1;
+  bonus=1;
 
   updateStats();
 
@@ -1036,12 +994,16 @@ function skipCue(){
   setTimeout(()=>{
 
     cueIndex++;
-    cueOpen = false;
-    hints = 0;
+
+    cueOpen=false;
+    replayingCue=false;
+    hints=0;
+
+    captionMask.classList.remove("show");
 
     showListening();
 
-    state.textContent = "Playing";
+    state.textContent="Playing";
 
     player.playVideo();
 
@@ -1052,11 +1014,9 @@ function pauseGame(){
 
   if(!player) return;
 
-  if(player.getPlayerState() === 1){
+  if(player.getPlayerState()===1){
 
     player.pauseVideo();
-
-    pauseOverlay.classList.add("show");
 
   }else if(!cueOpen){
 
@@ -1064,37 +1024,29 @@ function pauseGame(){
   }
 }
 
-function resumeGame(){
-
-  pauseOverlay.classList.remove("show");
-
-  if(!cueOpen){
-
-    player.playVideo();
-  }
-}
-
 function restartGame(){
 
-  cueIndex = 0;
-  cueOpen = false;
+  cueIndex=0;
 
-  solved = 0;
-  hits = 0;
-  fails = 0;
-  hints = 0;
-  score = 0;
-  bonus = 1;
+  cueOpen=false;
+  replayingCue=false;
+
+  solved=0;
+  hits=0;
+  fails=0;
+  hints=0;
+  score=0;
+  bonus=1;
+
+  captionMask.classList.remove("show");
 
   updateStats();
 
   setTools(false);
 
-  pauseOverlay.classList.remove("show");
-
   showListening();
 
-  state.textContent = "Playing";
+  state.textContent="Playing";
 
   player.seekTo(0,true);
   player.playVideo();
@@ -1121,15 +1073,16 @@ skipBtn.addEventListener("click",skipCue);
 
 pauseBtn.addEventListener("click",pauseGame);
 
-resumeBtn.addEventListener("click",resumeGame);
-
 restartBtn.addEventListener("click",restartGame);
 
 progress.addEventListener("input",()=>{
 
   if(player && !cueOpen){
 
-    player.seekTo(Number(progress.value),true);
+    player.seekTo(
+      Number(progress.value),
+      true
+    );
   }
 });
 
