@@ -176,7 +176,7 @@ linear-gradient(180deg,var(--navy) 0 34%,#f7f4ed 34% 100%)}
   <section class="scorebar">
     <button class="pause" id="pauseBtn" aria-label="Pause">II</button>
     <div class="metric"><span>Score</span><strong id="score">0</strong></div>
-    <div class="metric"><span>Gaps</span><strong id="gaps">0/3</strong></div>
+    <div class="metric"><span>Gaps</span><strong id="gaps">0/5</strong></div>
     <div class="metric"><span>Hits</span><strong id="hits">0</strong></div>
     <div class="metric"><span>Fails</span><strong id="fails">0</strong></div>
     <div class="bonus"><span>Bonus</span><strong id="bonus">x1</strong></div>
@@ -254,22 +254,36 @@ const CONFIG = {
   // without changing the game engine.
   challenges: [
     {
-      replayFrom: 137.5,
-      pauseAt: 146.8,
+      replayFrom: 103.0,
+      pauseAt: 108.0,
       before: "Hello from the",
       answer: "other",
       after: "side"
     },
     {
-      replayFrom: 228.5,
-      pauseAt: 237.5,
+      replayFrom: 119.0,
+      pauseAt: 126.0,
       before: "Hello from the",
       answer: "other",
       after: "side"
     },
     {
-      replayFrom: 298.5,
-      pauseAt: 307.8,
+      replayFrom: 137.0,
+      pauseAt: 145.0,
+      before: "Hello from the",
+      answer: "other",
+      after: "side"
+    },
+    {
+      replayFrom: 156.0,
+      pauseAt: 164.0,
+      before: "Hello from the",
+      answer: "other",
+      after: "side"
+    },
+    {
+      replayFrom: 175.0,
+      pauseAt: 183.0,
       before: "Hello from the",
       answer: "other",
       after: "side"
@@ -334,7 +348,7 @@ function setTools(on){
 function passiveMessage(text="Listening"){
   prevLine.textContent="";
   nextLine.textContent="";
-  currentLine.innerHTML=`<div class="listen-state"><small>${text}</small>Keep listening. The next challenge will appear automatically.</div>`;
+  currentLine.innerHTML=`<div class="listen-state"><small>${text}</small>Listening...</div>`;
   feedback.textContent="";
   feedback.className="feedback neutral";
 }
@@ -386,9 +400,9 @@ function startLoop(){
 
     // Show a quiet countdown only when the next gap is close.
     const until=cue.pauseAt-t;
-    if(until>0 && until<=7){
+    if(until>0 && until<=10){
       state.textContent=`Challenge in ${Math.ceil(until)}s`;
-    }else if(until>7){
+    }else if(until>10){
       state.textContent="Playing";
     }
 
