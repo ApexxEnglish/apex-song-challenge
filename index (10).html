@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Apex Song Challenge — Engine Test</title>
+<style>
+:root{
+  --navy:#10294b;--navy2:#183b68;--gold:#c69a45;--paper:#fbfaf7;
+  --ink:#142033;--muted:#6b7586;--line:#e7e4dc;--green:#1f6f4a;--red:#8b3a3a;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--paper);color:var(--ink)}
+button,input{font:inherit}
+.wrap{width:min(980px,calc(100% - 24px));margin:auto;padding:24px 0 50px}
+.brand{font-size:12px;letter-spacing:.16em;font-weight:900;color:var(--navy);margin-bottom:18px}
+.brand small{display:block;letter-spacing:0;color:var(--muted);font-weight:500;margin-top:4px}
+.card{background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:0 24px 70px rgba(16,41,75,.10)}
+.head{padding:28px 30px 22px;border-bottom:1px solid var(--line)}
+.eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:900;color:#86682f;margin-bottom:11px}
+h1{margin:0;color:var(--navy);font-size:clamp(34px,5vw,54px);line-height:1;letter-spacing:-.045em}
+.desc{margin:14px 0 0;color:var(--muted);line-height:1.65;max-width:720px}
+.player{position:relative;aspect-ratio:16/9;min-height:300px;background:linear-gradient(145deg,var(--navy),var(--navy2))}
+#player{width:100%;height:100%}
+.facade{position:absolute;inset:0;z-index:3;display:flex;align-items:flex-end;padding:30px;background:linear-gradient(145deg,#10294b,#183b68)}
+.facade.hide{display:none}
+.facade h2{margin:0 0 8px;color:#fff;font-size:32px}
+.facade p{margin:0 0 18px;color:rgba(255,255,255,.8);line-height:1.55}
+.btn{border:0;border-radius:12px;min-height:46px;padding:0 17px;font-weight:850;cursor:pointer}
+.primary{background:var(--gold);color:#17130e}
+.secondary{background:#eef2f7;color:var(--navy);border:1px solid #dfe5ed}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.panel{padding:26px 30px 30px}
+.status{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px;font-size:13px}
+.status strong{color:var(--navy)}
+.status span{color:var(--muted)}
+.box{padding:22px;border:1px solid var(--line);border-radius:18px}
+.box h3{margin:0 0 7px;color:var(--navy);font-size:22px}
+.box p{margin:0 0 16px;color:var(--muted);line-height:1.55}
+.row{display:grid;grid-template-columns:1fr auto;gap:10px}
+input{min-height:50px;border:1px solid #dfe3e8;border-radius:12px;padding:0 14px;outline:none}
+input:focus{border-color:#b99a60;box-shadow:0 0 0 4px rgba(198,154,69,.11)}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.feedback{min-height:24px;margin-top:14px;font-weight:750;font-size:14px}
+.feedback.good{color:var(--green)}.feedback.bad{color:var(--red)}.feedback.neutral{color:var(--navy)}
+.tech{margin-top:18px;padding:14px 16px;border-radius:14px;background:#f7f8fa;border:1px solid var(--line);font-size:12px;color:var(--muted);line-height:1.55}
+@media(max-width:640px){.head,.panel{padding:20px}.player{min-height:230px}.facade{padding:20px}.row{grid-template-columns:1fr}.row .btn{width:100%}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="brand">APEX ENGLISH<small>Song Challenge · Engine Test</small></div>
+
+  <section class="card">
+    <div class="head">
+      <div class="eyebrow">YouTube IFrame API Test</div>
+      <h1>Önce motoru doğruluyoruz.</h1>
+      <p class="desc">Bu dosya şarkı ürünü değil; YouTube oynatıcısının Vercel üzerinde yüklenip yüklenmediğini, otomatik durdurmayı ve cevap sonrası devam etmeyi test eder.</p>
+    </div>
+
+    <div class="player">
+      <div id="player"></div>
+      <div class="facade" id="facade">
+        <div>
+          <h2>Teknik Test</h2>
+          <p>Google'ın YouTube IFrame API dokümantasyonunda kullanılan örnek video ile test edilir.</p>
+          <button class="btn primary" id="startBtn">Testi Başlat</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="status">
+        <strong id="stateLabel">Durum: Hazır değil</strong>
+        <span id="timeLabel">0:00</span>
+      </div>
+
+      <div class="box">
+        <h3>Otomatik durdurma testi</h3>
+        <p>Video yaklaşık 6. saniyede otomatik duracak. Durduktan sonra aşağıya <strong>devam</strong> yaz.</p>
+
+        <div class="row">
+          <input id="answerInput" placeholder="devam" autocomplete="off" disabled>
+          <button class="btn primary" id="checkBtn" disabled>Kontrol Et</button>
+        </div>
+
+        <div class="actions">
+          <button class="btn secondary" id="replayBtn" disabled>6 Saniyeyi Tekrar Test Et</button>
+        </div>
+
+        <div class="feedback neutral" id="feedback">Önce Testi Başlat'a bas.</div>
+      </div>
+
+      <div class="tech" id="techLog">Teknik durum burada görünecek.</div>
+    </div>
+  </section>
+</main>
+
+<script>
+const TEST_VIDEO_ID = "M7lc1UVf-VE";
+const PAUSE_AT = 6.0;
+let player = null;
+let monitor = null;
+let triggered = false;
+let apiRequested = false;
+
+const facade = document.getElementById("facade");
+const startBtn = document.getElementById("startBtn");
+const answerInput = document.getElementById("answerInput");
+const checkBtn = document.getElementById("checkBtn");
+const replayBtn = document.getElementById("replayBtn");
+const feedback = document.getElementById("feedback");
+const stateLabel = document.getElementById("stateLabel");
+const timeLabel = document.getElementById("timeLabel");
+const techLog = document.getElementById("techLog");
+
+function setTech(text){ techLog.textContent = text; }
+
+function loadAPI(){
+  if(apiRequested) return;
+  apiRequested = true;
+  stateLabel.textContent = "Durum: API yükleniyor";
+  feedback.textContent = "YouTube API yükleniyor...";
+  setTech("https://www.youtube.com/iframe_api yükleniyor.");
+
+  const tag = document.createElement("script");
+  tag.src = "https://www.youtube.com/iframe_api";
+  tag.onerror = () => {
+    stateLabel.textContent = "Durum: API yüklenemedi";
+    feedback.className = "feedback bad";
+    feedback.textContent = "YouTube API dosyası yüklenemedi.";
+    setTech("Tarayıcı, ağ, içerik engelleyici veya güvenlik ayarı YouTube API isteğini engelliyor olabilir.");
+  };
+  document.head.appendChild(tag);
+}
+
+window.onYouTubeIframeAPIReady = function(){
+  setTech("YouTube API hazır. Player oluşturuluyor.");
+
+  player = new YT.Player("player", {
+    width: "100%",
+    height: "100%",
+    videoId: TEST_VIDEO_ID,
+    playerVars: {
+      playsinline: 1,
+      rel: 0
+    },
+    events: {
+      onReady: onPlayerReady,
+      onStateChange: onPlayerStateChange,
+      onError: onPlayerError,
+      onAutoplayBlocked: onAutoplayBlocked
+    }
+  });
+};
+
+function onPlayerReady(event){
+  facade.classList.add("hide");
+  stateLabel.textContent = "Durum: Player hazır";
+  feedback.className = "feedback neutral";
+  feedback.textContent = "Player hazır. Video başlatılıyor...";
+  setTech("onReady olayı alındı. playVideo() çağrılıyor.");
+  event.target.playVideo();
+  startMonitor();
+}
+
+function onPlayerStateChange(event){
+  const map = {
+    "-1":"başlamadı",
+    "0":"bitti",
+    "1":"oynuyor",
+    "2":"durdu",
+    "3":"buffering",
+    "5":"hazır"
+  };
+  const text = map[String(event.data)] || ("kod " + event.data);
+  stateLabel.textContent = "Durum: " + text;
+}
+
+function onPlayerError(event){
+  feedback.className = "feedback bad";
+  feedback.textContent = "YouTube player hata verdi. Hata kodu: " + event.data;
+  setTech("YouTube onError kodu: " + event.data + ". Bu dosyada Google dokümantasyonundaki örnek video ID'si kullanılıyor.");
+}
+
+function onAutoplayBlocked(){
+  feedback.className = "feedback neutral";
+  feedback.textContent = "Tarayıcı otomatik oynatmayı engelledi. Player içindeki Play düğmesine bir kez bas.";
+  setTech("onAutoplayBlocked olayı alındı. Bu tarayıcı politikası olabilir.");
+}
+
+function startMonitor(){
+  clearInterval(monitor);
+  monitor = setInterval(() => {
+    if(!player || typeof player.getCurrentTime !== "function") return;
+    const t = player.getCurrentTime();
+    timeLabel.textContent = formatTime(t);
+
+    if(!triggered && t >= PAUSE_AT){
+      triggered = true;
+      player.pauseVideo();
+      answerInput.disabled = false;
+      checkBtn.disabled = false;
+      replayBtn.disabled = false;
+      answerInput.focus();
+      feedback.className = "feedback neutral";
+      feedback.textContent = "Başarılı: video otomatik durdu. Şimdi 'devam' yaz.";
+      setTech("getCurrentTime() çalıştı ve " + t.toFixed(2) + ". saniyede pauseVideo() çağrıldı.");
+    }
+  }, 100);
+}
+
+function formatTime(t){
+  const m = Math.floor(t / 60);
+  const s = Math.floor(t % 60).toString().padStart(2,"0");
+  return m + ":" + s;
+}
+
+function checkAnswer(){
+  if(answerInput.value.trim().toLowerCase() !== "devam"){
+    feedback.className = "feedback bad";
+    feedback.textContent = "Bu teknik testte 'devam' yaz.";
+    return;
+  }
+
+  answerInput.disabled = true;
+  checkBtn.disabled = true;
+  feedback.className = "feedback good";
+  feedback.textContent = "Başarılı: cevap kontrol edildi ve video devam ediyor.";
+  setTech("Input kontrolü başarılı. playVideo() tekrar çağrıldı. Motor çalışıyor.");
+  player.playVideo();
+}
+
+function replayTest(){
+  triggered = false;
+  answerInput.value = "";
+  answerInput.disabled = true;
+  checkBtn.disabled = true;
+  replayBtn.disabled = true;
+  feedback.className = "feedback neutral";
+  feedback.textContent = "Test yeniden başlatılıyor...";
+  player.seekTo(0, true);
+  player.playVideo();
+}
+
+startBtn.addEventListener("click", loadAPI);
+checkBtn.addEventListener("click", checkAnswer);
+replayBtn.addEventListener("click", replayTest);
+answerInput.addEventListener("keydown", e => {
+  if(e.key === "Enter"){
+    e.preventDefault();
+    checkAnswer();
+  }
+});
+</script>
+</body>
+</html>
