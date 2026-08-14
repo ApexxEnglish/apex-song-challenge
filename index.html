@@ -1,10 +1,12 @@
-<!doctype html>
+from pathlib import Path
+
+html = r'''<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Apex Cue Studio</title>
-<meta name="description" content="Apex Cue Studio V2 — review and correct Gemini-generated cues for Apex Song Challenge.">
+<meta name="description" content="Apex Cue Studio — internal cue-authoring tool for Apex Song Challenge.">
 <style>
 :root{
   --navy:#0a2d50;
@@ -99,9 +101,9 @@ button{cursor:pointer}
   <header class="topbar">
     <div class="brand">
       <div class="mark" aria-hidden="true"></div>
-      <div><strong>APEX ENGLISH</strong><small>Cue Studio V2 · Gemini review</small></div>
+      <div><strong>APEX ENGLISH</strong><small>Cue Studio</small></div>
     </div>
-    <div class="badge">24 Gemini cues loaded · review before publish</div>
+    <div class="badge">Internal authoring tool</div>
   </header>
 
   <section class="layout">
@@ -136,8 +138,6 @@ button{cursor:pointer}
         <button class="btn secondary" id="markLineEndBtn" disabled>Set Line End</button>
         <button class="btn secondary" id="markPauseBtn" disabled>Set Pause</button>
         <button class="btn ghost" id="previewBtn" disabled>Preview Cue</button>
-        <button class="btn ghost" id="minusBtn" disabled>Pause -0.2s</button>
-        <button class="btn ghost" id="plusBtn" disabled>Pause +0.2s</button>
       </div>
     </div>
 
@@ -246,7 +246,6 @@ const APPROX_DURATION = 367;
 let player = null;
 let apiLoaded = false;
 let timer = null;
-const DEFAULT_CUES = [{"replayFrom":83.0,"lineEndsAt":91.0,"pauseAt":93.5,"before":"I was","answer":"wondering","after":"if after all these years you'd like to meet","difficulty":"B1","confidence":0.95},{"replayFrom":90.0,"lineEndsAt":96.5,"pauseAt":99.0,"before":"To go over","answer":"everything","after":"","difficulty":"B1","confidence":0.92},{"replayFrom":95.0,"lineEndsAt":101.5,"pauseAt":104.0,"before":"They say that time's","answer":"supposed","after":"to heal you","difficulty":"B1","confidence":0.94},{"replayFrom":100.0,"lineEndsAt":105.0,"pauseAt":107.5,"before":"But I ain't done much","answer":"healing","after":"","difficulty":"B1","confidence":0.96},{"replayFrom":104.0,"lineEndsAt":110.0,"pauseAt":112.5,"before":"Hello, can you","answer":"hear","after":"me?","difficulty":"B1","confidence":0.98},{"replayFrom":109.0,"lineEndsAt":116.5,"pauseAt":119.0,"before":"I'm in California","answer":"dreaming","after":"about who we used to be","difficulty":"B1","confidence":0.97},{"replayFrom":115.0,"lineEndsAt":121.5,"pauseAt":124.0,"before":"When we were","answer":"younger","after":"and free","difficulty":"B1","confidence":0.96},{"replayFrom":120.0,"lineEndsAt":128.5,"pauseAt":131.0,"before":"I've","answer":"forgotten","after":"how it felt before the world fell at our feet","difficulty":"B1","confidence":0.93},{"replayFrom":127.0,"lineEndsAt":133.5,"pauseAt":136.0,"before":"There's such a","answer":"difference","after":"between us","difficulty":"B1","confidence":0.95},{"replayFrom":132.0,"lineEndsAt":138.5,"pauseAt":141.0,"before":"And a","answer":"million","after":"miles","difficulty":"B1","confidence":0.94},{"replayFrom":140.0,"lineEndsAt":147.0,"pauseAt":149.5,"before":"Hello from the","answer":"other","after":"side","difficulty":"B1","confidence":0.98},{"replayFrom":146.0,"lineEndsAt":153.5,"pauseAt":156.0,"before":"I must've called a","answer":"thousand","after":"times","difficulty":"B1","confidence":0.95},{"replayFrom":152.0,"lineEndsAt":160.0,"pauseAt":162.5,"before":"To tell you I'm","answer":"sorry","after":"for everything that I've done","difficulty":"B1","confidence":0.96},{"replayFrom":158.0,"lineEndsAt":165.5,"pauseAt":168.0,"before":"But when I call you","answer":"never","after":"seem to be home","difficulty":"B1","confidence":0.94},{"replayFrom":165.0,"lineEndsAt":172.5,"pauseAt":175.0,"before":"Hello from the","answer":"outside","after":"","difficulty":"B1","confidence":0.97},{"replayFrom":171.0,"lineEndsAt":178.5,"pauseAt":181.0,"before":"At least I can say that I've","answer":"tried","after":"","difficulty":"B1","confidence":0.95},{"replayFrom":179.0,"lineEndsAt":186.5,"pauseAt":189.0,"before":"To tell you I'm sorry for","answer":"breaking","after":"your heart","difficulty":"B1","confidence":0.94},{"replayFrom":186.0,"lineEndsAt":194.5,"pauseAt":197.0,"before":"It","answer":"clearly","after":"doesn't tear you apart anymore","difficulty":"B1","confidence":0.92},{"replayFrom":201.0,"lineEndsAt":208.5,"pauseAt":211.0,"before":"It's so","answer":"typical","after":"of me to talk about myself","difficulty":"B1","confidence":0.93},{"replayFrom":219.0,"lineEndsAt":228.0,"pauseAt":230.5,"before":"It's no","answer":"secret","after":"that the both of us are running out of time","difficulty":"B1","confidence":0.94},{"replayFrom":270.0,"lineEndsAt":276.5,"pauseAt":279.0,"before":"To tell you I'm sorry for breaking your","answer":"heart","after":"","difficulty":"B1","confidence":0.95},{"replayFrom":275.0,"lineEndsAt":283.5,"pauseAt":286.0,"before":"It clearly doesn't tear you","answer":"apart","after":"anymore","difficulty":"B1","confidence":0.92},{"replayFrom":310.0,"lineEndsAt":318.5,"pauseAt":321.0,"before":"I must've called a thousand","answer":"times","after":"","difficulty":"B1","confidence":0.96},{"replayFrom":315.0,"lineEndsAt":325.5,"pauseAt":328.0,"before":"To tell you I'm sorry for everything that I've","answer":"done","after":"","difficulty":"B1","confidence":0.97}];
 let cues = [];
 let editingIndex = -1;
 
@@ -264,8 +263,6 @@ const markReplayBtn = $("markReplayBtn");
 const markLineEndBtn = $("markLineEndBtn");
 const markPauseBtn = $("markPauseBtn");
 const previewBtn = $("previewBtn");
-const minusBtn = $("minusBtn");
-const plusBtn = $("plusBtn");
 
 const replayFrom = $("replayFrom");
 const lineEndsAt = $("lineEndsAt");
@@ -307,8 +304,6 @@ function enablePlayerTools(on){
   markLineEndBtn.disabled = !on;
   markPauseBtn.disabled = !on;
   previewBtn.disabled = !on;
-  minusBtn.disabled = !on;
-  plusBtn.disabled = !on;
 }
 
 function loadYouTube(){
@@ -379,12 +374,6 @@ function setCurrent(input){
   input.value = now().toFixed(1);
 }
 
-function nudgePause(delta){
-  const cur = Number(pauseAt.value);
-  if(!Number.isFinite(cur)) return;
-  pauseAt.value = Math.max(0, cur + delta).toFixed(1);
-}
-
 function previewCue(){
   const cue = getFormCue(false);
   if(!cue) return;
@@ -411,8 +400,7 @@ function getFormCue(validate=true){
     before: before.value.trim(),
     answer: answer.value.trim().toLowerCase(),
     after: after.value.trim(),
-    difficulty: difficulty.value,
-    confidence: editingIndex >= 0 && cues[editingIndex]?.confidence ? cues[editingIndex].confidence : 1
+    difficulty: difficulty.value
   };
 
   if(validate){
@@ -520,7 +508,7 @@ function renderCues(){
         <div>
           <strong>${escapeHtml(cue.before)} <span style="color:#b78a32">[${escapeHtml(cue.answer)}]</span> ${escapeHtml(cue.after)}</strong>
           <p>Replay ${fmt(cue.replayFrom)} · Line end ${fmt(cue.lineEndsAt)} · Pause ${fmt(cue.pauseAt)}</p>
-          <small>${escapeHtml(cue.difficulty || "B1")}${cue.confidence ? ` · confidence ${Number(cue.confidence).toFixed(2)}` : ""}</small>
+          <small>${escapeHtml(cue.difficulty || "B1")}</small>
         </div>
         <div class="cue-actions">
           <button class="iconbtn" onclick="playCue(${index})" title="Preview">▶</button>
@@ -531,15 +519,7 @@ function renderCues(){
     `).join("");
   }
 
-  const exportCues = cues.map(cue => ({
-    replayFrom: cue.replayFrom,
-    lineEndsAt: cue.lineEndsAt,
-    pauseAt: cue.pauseAt,
-    before: cue.before,
-    answer: cue.answer,
-    after: cue.after,
-    confidence: cue.confidence ?? 1
-  }));
+  const exportCues = cues.map(({difficulty,...cue}) => cue);
   jsonOut.value = JSON.stringify(exportCues,null,2);
 }
 
@@ -552,21 +532,15 @@ function escapeHtml(value){
 }
 
 function saveLocal(){
-  localStorage.setItem("apx_cue_studio_v2", JSON.stringify(cues));
+  localStorage.setItem("apx_cue_studio_v1", JSON.stringify(cues));
 }
 
 function loadLocal(){
   try{
-    const raw = localStorage.getItem("apx_cue_studio_v2");
-    if(raw){
-      const saved = JSON.parse(raw);
-      cues = Array.isArray(saved) ? saved : [...DEFAULT_CUES];
-    }else{
-      cues = [...DEFAULT_CUES];
-      saveLocal();
-    }
+    const saved = JSON.parse(localStorage.getItem("apx_cue_studio_v1") || "[]");
+    if(Array.isArray(saved)) cues = saved;
   }catch(e){
-    cues = [...DEFAULT_CUES];
+    cues = [];
   }
   renderCues();
 }
@@ -612,8 +586,6 @@ markReplayBtn.addEventListener("click",()=>setCurrent(replayFrom));
 markLineEndBtn.addEventListener("click",()=>setCurrent(lineEndsAt));
 markPauseBtn.addEventListener("click",()=>setCurrent(pauseAt));
 previewBtn.addEventListener("click",previewCue);
-minusBtn.addEventListener("click",()=>nudgePause(-0.2));
-plusBtn.addEventListener("click",()=>nudgePause(0.2));
 
 saveCueBtn.addEventListener("click",saveCue);
 newCueBtn.addEventListener("click",resetForm);
@@ -650,3 +622,8 @@ loadLocal();
 </script>
 </body>
 </html>
+'''
+
+path = Path("/mnt/data/apex-cue-studio-v1.html")
+path.write_text(html, encoding="utf-8")
+print(f"Created {path} ({path.stat().st_size} bytes)")
