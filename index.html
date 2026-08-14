@@ -346,7 +346,7 @@ linear-gradient(180deg,var(--navy) 0 36%,var(--paper) 36% 100%)}
           <h1>Hello</h1>
           <p>
             YouTube captions stay off. The lyric area below is controlled by Apex,
-            and selected words become listening gaps.
+            and selected words become listening gaps. A correct answer stays paused until you press Continue.
           </p>
           <button class="primary" id="startBtn">Start Challenge</button>
         </div>
@@ -400,7 +400,7 @@ linear-gradient(180deg,var(--navy) 0 36%,var(--paper) 36% 100%)}
     <span>YouTube captions: off</span>
     <span>Inline typing</span>
     <span>Auto pause</span>
-    <span>Auto continue</span>
+    <span>Hard pause on gaps</span><span>24-gap engine ready</span>
   </section>
 </main>
 </div>
@@ -523,7 +523,8 @@ window.onYouTubeIframeAPIReady = function(){
     playerVars: {
       playsinline: 1,
       rel: 0,
-      controls: 1,
+      controls: 0,
+      disablekb: 1,
 
       // Captions are deliberately disabled for the listening game.
       cc_load_policy: 0
@@ -574,7 +575,22 @@ function startLoop(){
     progress.style.width =
       `${Math.max(0, Math.min(100, (t / CONFIG.approxDuration) * 100))}%`;
 
-    if(cueOpen) return;
+    if(cueOpen){
+      try{
+        const ps = player.getPlayerState();
+        if(ps === 1 || ps === 3){
+          player.pauseVideo();
+        }
+
+        const activeCue = CONFIG.cues[cueIndex];
+        if(activeCue && t > activeCue.pauseAt + 0.20){
+          player.seekTo(activeCue.pauseAt, true);
+          player.pauseVideo();
+        }
+      }catch(e){}
+      return;
+    }
+
     if(cueIndex >= CONFIG.cues.length) return;
 
     const cue = CONFIG.cues[cueIndex];
@@ -597,7 +613,17 @@ function openCue(){
 
   cueOpen = true;
 
-  player.pauseVideo();
+  // Hard stop exactly on the challenge boundary.
+  try{
+    player.seekTo(cue.pauseAt, true);
+    player.pauseVideo();
+    setTimeout(() => {
+      try{
+        player.seekTo(cue.pauseAt, true);
+        player.pauseVideo();
+      }catch(e){}
+    }, 120);
+  }catch(e){}
 
   state.textContent = `Gap ${cueIndex + 1} of ${CONFIG.cues.length}`;
 
@@ -611,6 +637,8 @@ function openCue(){
     `<span> ${cue.after}</span>`;
 
   enableTools(true);
+  checkBtn.textContent = "Check";
+  checkBtn.dataset.action = "check";
 
   const input = document.getElementById("gapInput");
 
@@ -633,6 +661,22 @@ function normalize(value){
 
 function checkAnswer(){
   if(!cueOpen) return;
+
+  if(checkBtn.dataset.action === "continue"){
+    checkBtn.dataset.action = "check";
+    checkBtn.textContent = "Check";
+
+    cueIndex++;
+    cueOpen = false;
+    hints = 0;
+
+    enableTools(false);
+    state.textContent = "Playing";
+    showListening();
+
+    player.playVideo();
+    return;
+  }
 
   const cue = CONFIG.cues[cueIndex];
   const input = document.getElementById("gapInput");
@@ -662,24 +706,22 @@ function checkAnswer(){
       `<span class="gap">${cue.answer}</span>` +
       `<span> ${cue.after}</span>`;
 
-    enableTools(false);
+    replayBtn.disabled = true;
+    hintBtn.disabled = true;
+    skipBtn.disabled = true;
+
+    checkBtn.disabled = false;
+    checkBtn.textContent = "Continue";
+    checkBtn.dataset.action = "continue";
+
+    const inputAfterCorrect = document.getElementById("gapInput");
+    if(inputAfterCorrect) inputAfterCorrect.disabled = true;
 
     feedback.textContent = "";
     feedback.className = "feedback good";
 
+    state.textContent = "Correct — press Continue";
     updateStats();
-
-    setTimeout(() => {
-      cueIndex++;
-      cueOpen = false;
-      hints = 0;
-
-      state.textContent = "Playing";
-
-      showListening();
-
-      player.playVideo();
-    }, 360);
 
   }else{
     fails++;
@@ -702,6 +744,8 @@ function replayCue(){
   cueOpen = false;
 
   enableTools(false);
+  checkBtn.textContent = "Check";
+  checkBtn.dataset.action = "check";
 
   state.textContent = "Listening again";
 
@@ -743,6 +787,8 @@ function skipCue(){
   bonus = 1;
 
   enableTools(false);
+  checkBtn.textContent = "Check";
+  checkBtn.dataset.action = "check";
   updateStats();
 
   setTimeout(() => {
@@ -799,6 +845,8 @@ function restart(){
   pauseOverlay.classList.remove("show");
 
   enableTools(false);
+  checkBtn.textContent = "Check";
+  checkBtn.dataset.action = "check";
   updateStats();
 
   state.textContent = "Playing";
