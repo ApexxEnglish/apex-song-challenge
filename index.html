@@ -3,148 +3,271 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Apex Song Challenge — V4</title>
-<meta name="description" content="Apex English Song Challenge — premium interactive listening engine.">
+<title>Apex Song Challenge — V5 Listening Engine</title>
+<meta name="description" content="Apex English Song Challenge — synced listening engine with inline gaps and YouTube captions disabled.">
 <style>
 :root{
   --navy:#082b4c;
   --navy2:#0e416f;
-  --navy3:#0b365e;
   --gold:#d3a343;
   --gold2:#edc977;
-  --paper:#f6f3ec;
-  --white:#fff;
+  --paper:#f7f4ed;
+  --white:#ffffff;
   --ink:#10243a;
-  --muted:#7a8492;
-  --line:#e7e1d6;
+  --muted:#8a94a1;
+  --line:#e8e2d8;
   --good:#2b7654;
   --bad:#a44747;
 }
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--paper);color:var(--ink)}
+html,body{margin:0;min-height:100%;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--navy);color:var(--ink)}
 button,input{font:inherit}
 button{cursor:pointer}
+
 .app{min-height:100vh;background:
-linear-gradient(180deg,var(--navy) 0 34%,#f7f4ed 34% 100%)}
+linear-gradient(180deg,var(--navy) 0 36%,var(--paper) 36% 100%)}
+
 .top{
-  width:min(1320px,calc(100% - 32px));margin:0 auto;padding:18px 0 13px;
-  display:flex;align-items:center;justify-content:space-between;gap:18px;color:#fff
+  width:min(1320px,calc(100% - 28px));
+  margin:0 auto;
+  padding:16px 0 12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  color:#fff;
 }
+
 .brand{display:flex;align-items:center;gap:11px}
-.brand-mark{width:34px;height:34px;border:1px solid rgba(255,255,255,.22);border-radius:10px;position:relative}
-.brand-mark:before,.brand-mark:after{content:"";position:absolute;left:9px;right:9px;height:2px;background:var(--gold);border-radius:99px}
-.brand-mark:before{top:13px}.brand-mark:after{top:19px}
+.brand-mark{
+  width:34px;height:34px;border-radius:10px;
+  border:1px solid rgba(255,255,255,.22);
+  position:relative
+}
+.brand-mark:before,.brand-mark:after{
+  content:"";position:absolute;left:9px;right:9px;height:2px;
+  background:var(--gold);border-radius:99px
+}
+.brand-mark:before{top:13px}
+.brand-mark:after{top:19px}
+
 .brand strong{display:block;font-size:12px;letter-spacing:.16em}
 .brand small{display:block;margin-top:2px;font-size:11px;color:rgba(255,255,255,.62)}
+
 .song-head{text-align:right}
 .song-head strong{display:block;font-size:13px}
 .song-head span{display:block;margin-top:2px;font-size:11px;color:rgba(255,255,255,.62)}
 
 .game{
-  width:min(1320px,calc(100% - 32px));margin:0 auto 48px;
-  border-radius:22px;overflow:hidden;background:#fff;
-  box-shadow:0 30px 90px rgba(3,28,51,.24);border:1px solid rgba(255,255,255,.15)
+  width:min(1320px,calc(100% - 28px));
+  margin:0 auto 50px;
+  background:#fff;
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:0 30px 90px rgba(3,28,51,.28)
 }
+
 .scorebar{
-  min-height:70px;padding:10px 18px;background:linear-gradient(90deg,#0a3156,#0d4776);
-  display:grid;grid-template-columns:auto repeat(4,minmax(90px,1fr)) minmax(110px,auto);
-  gap:8px;align-items:center;color:#fff
+  min-height:70px;
+  padding:10px 18px;
+  background:linear-gradient(90deg,#0a3156,#0d4776);
+  display:grid;
+  grid-template-columns:auto repeat(4,minmax(90px,1fr)) minmax(110px,auto);
+  gap:8px;
+  align-items:center;
+  color:#fff
 }
+
 .pause{
-  width:44px;height:44px;border-radius:12px;border:1px solid rgba(255,255,255,.16);
-  background:rgba(255,255,255,.07);color:#fff;font-weight:900;font-size:16px
+  width:44px;height:44px;border-radius:12px;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(255,255,255,.07);
+  color:#fff;font-weight:900
 }
+
 .metric{border-left:1px solid rgba(255,255,255,.11);padding:4px 13px}
-.metric span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.55);font-weight:800}
-.metric strong{display:block;margin-top:3px;font-size:20px;letter-spacing:-.02em}
+.metric span,.bonus span{
+  display:block;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  color:rgba(255,255,255,.55);
+  font-weight:800
+}
+.metric strong{display:block;margin-top:3px;font-size:20px}
 .bonus{text-align:right}
-.bonus span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.55);font-weight:800}
 .bonus strong{display:block;font-size:24px;margin-top:2px}
 
 .progress{height:5px;background:#dfe6ec}
-.progress i{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .16s linear}
+.progress i{
+  display:block;height:100%;width:0;
+  background:linear-gradient(90deg,var(--gold),var(--gold2));
+  transition:width .15s linear
+}
 
-.video-shell{position:relative;background:#050f19}
-.video{position:relative;aspect-ratio:16/9;max-height:670px}
+.video-shell{background:#050f19}
+.video{position:relative;aspect-ratio:16/9;max-height:680px}
 #player{width:100%;height:100%}
+
 .facade{
-  position:absolute;inset:0;z-index:6;display:flex;align-items:flex-end;padding:34px;
-  background:linear-gradient(0deg,rgba(3,14,26,.96),rgba(3,14,26,.04) 66%),
-  url("https://i.ytimg.com/vi/YQHsXMglC9A/maxresdefault.jpg") center/cover no-repeat
+  position:absolute;inset:0;z-index:6;
+  display:flex;align-items:flex-end;padding:34px;
+  background:
+    linear-gradient(0deg,rgba(3,14,26,.96),rgba(3,14,26,.04) 66%),
+    url("https://i.ytimg.com/vi/YQHsXMglC9A/maxresdefault.jpg") center/cover no-repeat
 }
 .facade.hidden{display:none}
 .facade-card{color:#fff;max-width:560px}
-.facade-card .eyebrow{font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:900;color:rgba(255,255,255,.62)}
-.facade-card h1{margin:7px 0 7px;font-size:clamp(35px,5vw,58px);line-height:.98;letter-spacing:-.04em}
-.facade-card p{margin:0 0 18px;color:rgba(255,255,255,.78);font-size:14px;line-height:1.55}
+.facade-card .eyebrow{
+  font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  font-weight:900;color:rgba(255,255,255,.62)
+}
+.facade-card h1{
+  margin:7px 0 7px;font-size:clamp(36px,5vw,58px);
+  line-height:.98;letter-spacing:-.04em
+}
+.facade-card p{
+  margin:0 0 18px;color:rgba(255,255,255,.78);
+  font-size:14px;line-height:1.55
+}
+
 .primary{
-  min-height:46px;padding:0 18px;border:0;border-radius:11px;background:var(--gold);
-  color:#17130d;font-weight:850;box-shadow:0 10px 25px rgba(211,163,67,.25)
+  min-height:46px;padding:0 18px;border:0;border-radius:11px;
+  background:var(--gold);color:#17130d;font-weight:850;
+  box-shadow:0 10px 25px rgba(211,163,67,.25)
 }
 
 .lyric-stage{
-  min-height:275px;padding:28px 44px 32px;background:
-  radial-gradient(circle at 50% 0%,rgba(211,163,67,.08),transparent 34%),
-  #fff;position:relative
+  min-height:300px;
+  padding:26px 44px 30px;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(211,163,67,.08),transparent 34%),
+    #fff;
+  position:relative
 }
-.lyric-meta{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:18px}
-.lyric-meta strong{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--navy);font-weight:900}
+
+.lyric-meta{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:15px;margin-bottom:16px
+}
+.lyric-meta strong{
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--navy);font-weight:900
+}
 .lyric-meta span{font-size:12px;color:var(--muted)}
+
 .lyric-lines{max-width:1080px;margin:0 auto;text-align:center}
+
 .line-prev,.line-next{
-  min-height:34px;font-size:clamp(18px,2.3vw,29px);font-weight:700;line-height:1.3;color:#b6bcc5;
-  transition:.2s ease
+  min-height:34px;
+  font-size:clamp(18px,2.2vw,28px);
+  font-weight:700;
+  line-height:1.3;
+  color:#c0c5cc;
+  transition:.18s ease
 }
+
 .line-current{
-  min-height:68px;margin:7px 0 8px;font-size:clamp(28px,4vw,48px);font-weight:850;line-height:1.25;
-  letter-spacing:-.035em;color:var(--navy)
+  min-height:74px;
+  margin:7px 0 8px;
+  font-size:clamp(28px,4vw,48px);
+  font-weight:850;
+  line-height:1.25;
+  letter-spacing:-.035em;
+  color:var(--navy)
 }
-.listen-state{color:var(--navy);font-size:clamp(25px,3.3vw,40px);font-weight:800}
-.listen-state small{display:block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#9a8050;margin-bottom:8px}
+
+.listen-state{
+  color:var(--navy);
+  font-size:clamp(24px,3.2vw,39px);
+  font-weight:800
+}
+.listen-state small{
+  display:block;
+  margin-bottom:8px;
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#9a8050
+}
+
 .gap{
-  display:inline-flex;min-width:125px;justify-content:center;color:var(--gold);
-  border-bottom:3px solid var(--gold);padding:0 8px 2px
+  display:inline-flex;
+  min-width:118px;
+  justify-content:center;
+  color:var(--gold);
+  border-bottom:3px solid var(--gold);
+  padding:0 8px 2px
 }
+
 .inline-input{
-  display:none;width:150px;max-width:36vw;border:0;border-bottom:3px solid var(--gold);
-  padding:0 7px 2px;outline:none;background:transparent;text-align:center;color:var(--navy);
-  font:inherit;font-weight:inherit
+  display:none;
+  width:145px;
+  max-width:38vw;
+  border:0;
+  border-bottom:3px solid var(--gold);
+  padding:0 6px 2px;
+  outline:none;
+  background:transparent;
+  text-align:center;
+  color:var(--navy);
+  font:inherit;
+  font-weight:inherit
 }
 .inline-input.show{display:inline-block}
 .gap.hide{display:none}
 
-.tools{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin-top:20px}
+.tools{
+  display:flex;justify-content:center;flex-wrap:wrap;
+  gap:9px;margin-top:20px
+}
 .btn{
-  min-height:43px;padding:0 15px;border-radius:10px;font-weight:820;transition:.15s ease
+  min-height:43px;padding:0 15px;border-radius:10px;
+  font-weight:820;transition:.15s ease
 }
 .btn:hover:not(:disabled){transform:translateY(-1px)}
 .btn:disabled{opacity:.36;cursor:not-allowed;transform:none}
 .secondary{border:1px solid #dde4ea;background:#eef3f7;color:var(--navy)}
 .ghost{border:1px solid var(--line);background:#fff;color:var(--navy)}
 .check{border:0;background:var(--gold);color:#17130d}
-.feedback{text-align:center;min-height:21px;margin-top:12px;font-size:13px;font-weight:750}
+
+.feedback{
+  text-align:center;min-height:21px;margin-top:12px;
+  font-size:13px;font-weight:750
+}
 .feedback.neutral{color:var(--muted)}
 .feedback.good{color:var(--good)}
 .feedback.bad{color:var(--bad)}
 
-.levelbar{
-  display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;
-  padding:14px 20px;border-top:1px solid var(--line);background:#fbfaf7
+.info-strip{
+  padding:13px 20px;
+  border-top:1px solid var(--line);
+  background:#fbfaf7;
+  display:flex;
+  justify-content:center;
+  gap:18px;
+  flex-wrap:wrap;
+  color:#7f8792;
+  font-size:11px
 }
-.levelbar span{font-size:10px;letter-spacing:.13em;text-transform:uppercase;font-weight:900;color:#9b875e;margin-right:3px}
-.level{
-  border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:999px;padding:7px 11px;
-  font-size:11px;font-weight:800
-}
-.level.active{background:var(--navy);color:#fff;border-color:var(--navy)}
 
 .pause-overlay{
-  display:none;position:absolute;inset:0;z-index:10;align-items:center;justify-content:center;
-  background:rgba(4,20,36,.73);backdrop-filter:blur(4px)
+  display:none;
+  position:absolute;inset:0;z-index:10;
+  align-items:center;justify-content:center;
+  background:rgba(4,20,36,.73);
+  backdrop-filter:blur(4px)
 }
 .pause-overlay.show{display:flex}
-.pause-card{width:min(390px,calc(100% - 26px));background:#fff;border-radius:18px;padding:24px;text-align:center;box-shadow:0 25px 70px rgba(0,0,0,.3)}
-.pause-card small{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#9b7b3d;font-weight:900}
+.pause-card{
+  width:min(390px,calc(100% - 26px));
+  background:#fff;border-radius:18px;padding:24px;
+  text-align:center;box-shadow:0 25px 70px rgba(0,0,0,.3)
+}
+.pause-card small{
+  font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:#9b7b3d;font-weight:900
+}
 .pause-card h3{margin:8px 0 6px;color:var(--navy);font-size:25px}
 .pause-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.55}
 .pause-actions{display:flex;justify-content:center;gap:8px;margin-top:16px}
@@ -156,7 +279,7 @@ linear-gradient(180deg,var(--navy) 0 34%,#f7f4ed 34% 100%)}
   .metric:nth-of-type(4),.bonus{display:none}
   .video{min-height:225px}
   .facade{padding:20px}
-  .lyric-stage{padding:22px 14px 26px;min-height:250px}
+  .lyric-stage{padding:22px 14px 26px;min-height:265px}
   .line-current{font-size:29px}
   .line-prev,.line-next{font-size:18px}
 }
@@ -167,31 +290,64 @@ linear-gradient(180deg,var(--navy) 0 34%,#f7f4ed 34% 100%)}
 <header class="top">
   <div class="brand">
     <div class="brand-mark" aria-hidden="true"></div>
-    <div><strong>APEX ENGLISH</strong><small>Song Challenge</small></div>
+    <div>
+      <strong>APEX ENGLISH</strong>
+      <small>Song Challenge</small>
+    </div>
   </div>
-  <div class="song-head"><strong>Adele · Hello</strong><span>B1 Listening</span></div>
+
+  <div class="song-head">
+    <strong>Adele · Hello</strong>
+    <span>B1 Listening</span>
+  </div>
 </header>
 
 <main class="game">
   <section class="scorebar">
     <button class="pause" id="pauseBtn" aria-label="Pause">II</button>
-    <div class="metric"><span>Score</span><strong id="score">0</strong></div>
-    <div class="metric"><span>Gaps</span><strong id="gaps">0/5</strong></div>
-    <div class="metric"><span>Hits</span><strong id="hits">0</strong></div>
-    <div class="metric"><span>Fails</span><strong id="fails">0</strong></div>
-    <div class="bonus"><span>Bonus</span><strong id="bonus">x1</strong></div>
+
+    <div class="metric">
+      <span>Score</span>
+      <strong id="score">0</strong>
+    </div>
+
+    <div class="metric">
+      <span>Gaps</span>
+      <strong id="gaps">0/2</strong>
+    </div>
+
+    <div class="metric">
+      <span>Hits</span>
+      <strong id="hits">0</strong>
+    </div>
+
+    <div class="metric">
+      <span>Fails</span>
+      <strong id="fails">0</strong>
+    </div>
+
+    <div class="bonus">
+      <span>Bonus</span>
+      <strong id="bonus">x1</strong>
+    </div>
   </section>
 
-  <div class="progress"><i id="progress"></i></div>
+  <div class="progress">
+    <i id="progress"></i>
+  </div>
 
   <section class="video-shell">
     <div class="video">
       <div id="player"></div>
+
       <div class="facade" id="facade">
         <div class="facade-card">
           <div class="eyebrow">Interactive Listening</div>
           <h1>Hello</h1>
-          <p>Listen naturally. The song pauses only at selected challenge moments.</p>
+          <p>
+            YouTube captions stay off. The lyric area below is controlled by Apex,
+            and selected words become listening gaps.
+          </p>
           <button class="primary" id="startBtn">Start Challenge</button>
         </div>
       </div>
@@ -204,11 +360,16 @@ linear-gradient(180deg,var(--navy) 0 34%,#f7f4ed 34% 100%)}
       <span id="time">0:00</span>
     </div>
 
-    <div class="lyric-lines" id="lyricLines">
+    <div class="lyric-lines">
       <div class="line-prev" id="prevLine"></div>
+
       <div class="line-current" id="currentLine">
-        <div class="listen-state"><small>Apex Song Challenge</small>Press Start to begin.</div>
+        <div class="listen-state">
+          <small>Apex Song Challenge</small>
+          Press Start to begin.
+        </div>
       </div>
+
       <div class="line-next" id="nextLine"></div>
     </div>
 
@@ -226,6 +387,7 @@ linear-gradient(180deg,var(--navy) 0 34%,#f7f4ed 34% 100%)}
         <small>Session paused</small>
         <h3>Paused</h3>
         <p>Your score and progress stay in this browser.</p>
+
         <div class="pause-actions">
           <button class="btn check" id="resumeBtn">Resume</button>
           <button class="btn secondary" id="restartBtn">Restart</button>
@@ -234,12 +396,11 @@ linear-gradient(180deg,var(--navy) 0 34%,#f7f4ed 34% 100%)}
     </div>
   </section>
 
-  <section class="levelbar">
-    <span>Difficulty</span>
-    <button class="level">A1–A2</button>
-    <button class="level active">B1</button>
-    <button class="level">B2</button>
-    <button class="level">C1</button>
+  <section class="info-strip">
+    <span>YouTube captions: off</span>
+    <span>Inline typing</span>
+    <span>Auto pause</span>
+    <span>Auto continue</span>
   </section>
 </main>
 </div>
@@ -249,41 +410,21 @@ const CONFIG = {
   videoId: "YQHsXMglC9A",
   approxDuration: 367,
 
-  // These are deliberately sparse demo cues.
-  // A licensed lyric feed can later populate the continuous lyric stream
-  // without changing the game engine.
-  challenges: [
+  /*
+    The engine is built for a licensed synced-lyrics feed.
+    For this prototype, only short challenge snippets are stored locally.
+  */
+  cues: [
     {
-      replayFrom: 103.0,
+      replayFrom: 103.2,
       pauseAt: 108.0,
-      before: "Hello from the",
-      answer: "other",
-      after: "side"
+      before: "Hello, can you",
+      answer: "hear",
+      after: "me?"
     },
     {
-      replayFrom: 119.0,
-      pauseAt: 126.0,
-      before: "Hello from the",
-      answer: "other",
-      after: "side"
-    },
-    {
-      replayFrom: 137.0,
+      replayFrom: 136.8,
       pauseAt: 145.0,
-      before: "Hello from the",
-      answer: "other",
-      after: "side"
-    },
-    {
-      replayFrom: 156.0,
-      pauseAt: 164.0,
-      before: "Hello from the",
-      answer: "other",
-      after: "side"
-    },
-    {
-      replayFrom: 175.0,
-      pauseAt: 183.0,
       before: "Hello from the",
       answer: "other",
       after: "side"
@@ -294,90 +435,127 @@ const CONFIG = {
 let player = null;
 let apiLoaded = false;
 let timer = null;
-let currentChallenge = 0;
-let challengeOpen = false;
-let solved = [];
-let hints = 0;
+
+let cueIndex = 0;
+let cueOpen = false;
+let solved = 0;
+
 let hits = 0;
 let fails = 0;
+let hints = 0;
 let score = 0;
 let bonus = 1;
+
 let userPaused = false;
-let lastPlaybackTime = 0;
 
 const $ = id => document.getElementById(id);
+
 const startBtn = $("startBtn");
 const facade = $("facade");
 const pauseBtn = $("pauseBtn");
 const progress = $("progress");
 const state = $("state");
 const time = $("time");
+
 const prevLine = $("prevLine");
 const currentLine = $("currentLine");
 const nextLine = $("nextLine");
+
 const replayBtn = $("replayBtn");
 const hintBtn = $("hintBtn");
 const skipBtn = $("skipBtn");
 const checkBtn = $("checkBtn");
 const feedback = $("feedback");
+
 const pauseOverlay = $("pauseOverlay");
 const resumeBtn = $("resumeBtn");
 const restartBtn = $("restartBtn");
 
 function fmt(sec){
-  const m=Math.floor(sec/60);
-  const s=Math.floor(sec%60).toString().padStart(2,"0");
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60).toString().padStart(2,"0");
   return `${m}:${s}`;
 }
 
 function updateStats(){
-  $("score").textContent=score;
-  $("gaps").textContent=`${hits}/${CONFIG.challenges.length}`;
-  $("hits").textContent=hits;
-  $("fails").textContent=fails;
-  $("bonus").textContent=`x${bonus}`;
+  $("score").textContent = score;
+  $("gaps").textContent = `${solved}/${CONFIG.cues.length}`;
+  $("hits").textContent = hits;
+  $("fails").textContent = fails;
+  $("bonus").textContent = `x${bonus}`;
 }
 
-function setTools(on){
-  replayBtn.disabled=!on;
-  hintBtn.disabled=!on;
-  skipBtn.disabled=!on;
-  checkBtn.disabled=!on;
+function enableTools(on){
+  replayBtn.disabled = !on;
+  hintBtn.disabled = !on;
+  skipBtn.disabled = !on;
+  checkBtn.disabled = !on;
 }
 
-function passiveMessage(text="Listening"){
-  prevLine.textContent="";
-  nextLine.textContent="";
-  currentLine.innerHTML=`<div class="listen-state"><small>${text}</small>Listening...</div>`;
-  feedback.textContent="";
-  feedback.className="feedback neutral";
+function showListening(){
+  prevLine.textContent = "";
+  nextLine.textContent = "";
+
+  currentLine.innerHTML =
+    `<div class="listen-state"><small>Listening</small>Follow the song. A gap will appear automatically.</div>`;
+
+  feedback.textContent = "";
+  feedback.className = "feedback neutral";
 }
 
 function loadYouTube(){
   if(apiLoaded) return;
-  apiLoaded=true;
-  state.textContent="Loading";
-  const s=document.createElement("script");
-  s.src="https://www.youtube.com/iframe_api";
-  document.head.appendChild(s);
+
+  apiLoaded = true;
+  state.textContent = "Loading";
+
+  const script = document.createElement("script");
+  script.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(script);
 }
 
-window.onYouTubeIframeAPIReady=function(){
-  player=new YT.Player("player",{
-    width:"100%",height:"100%",videoId:CONFIG.videoId,
-    playerVars:{playsinline:1,rel:0,controls:1,cc_load_policy:0},
-    events:{
-      onReady:e=>{
+window.onYouTubeIframeAPIReady = function(){
+  player = new YT.Player("player", {
+    width: "100%",
+    height: "100%",
+    videoId: CONFIG.videoId,
+
+    playerVars: {
+      playsinline: 1,
+      rel: 0,
+      controls: 1,
+
+      // Captions are deliberately disabled for the listening game.
+      cc_load_policy: 0
+    },
+
+    events: {
+      onReady: event => {
         facade.classList.add("hidden");
-        state.textContent="Playing";
-        passiveMessage("Listening");
-        e.target.playVideo();
+        state.textContent = "Playing";
+        showListening();
+        event.target.playVideo();
         startLoop();
+
+        // Ask YouTube captions module to unload if available.
+        try {
+          event.target.unloadModule("captions");
+          event.target.unloadModule("cc");
+        } catch (e) {}
       },
-      onError:e=>{
-        state.textContent="Player error";
-        feedback.className="feedback bad";
-        feedback.textContent=`YouTube error ${e.data}`;
+
+      onStateChange: () => {
+        // Re-apply caption suppression if YouTube reloads modules.
+        try {
+          player.unloadModule("captions");
+          player.unloadModule("cc");
+        } catch (e) {}
+      },
+
+      onError: event => {
+        state.textContent = "Player error";
+        feedback.className = "feedback bad";
+        feedback.textContent = `YouTube error ${event.data}`;
       }
     }
   });
@@ -385,214 +563,260 @@ window.onYouTubeIframeAPIReady=function(){
 
 function startLoop(){
   clearInterval(timer);
-  timer=setInterval(()=>{
-    if(!player||typeof player.getCurrentTime!=="function")return;
 
-    const t=player.getCurrentTime();
-    lastPlaybackTime=t;
-    time.textContent=fmt(t);
-    progress.style.width=`${Math.max(0,Math.min(100,(t/CONFIG.approxDuration)*100))}%`;
+  timer = setInterval(() => {
+    if(!player || typeof player.getCurrentTime !== "function") return;
 
-    if(challengeOpen) return;
-    if(currentChallenge>=CONFIG.challenges.length) return;
+    const t = player.getCurrentTime();
 
-    const cue=CONFIG.challenges[currentChallenge];
+    time.textContent = fmt(t);
 
-    // Show a quiet countdown only when the next gap is close.
-    const until=cue.pauseAt-t;
-    if(until>0 && until<=10){
-      state.textContent=`Challenge in ${Math.ceil(until)}s`;
-    }else if(until>10){
-      state.textContent="Playing";
+    progress.style.width =
+      `${Math.max(0, Math.min(100, (t / CONFIG.approxDuration) * 100))}%`;
+
+    if(cueOpen) return;
+    if(cueIndex >= CONFIG.cues.length) return;
+
+    const cue = CONFIG.cues[cueIndex];
+    const secondsLeft = cue.pauseAt - t;
+
+    if(secondsLeft > 0 && secondsLeft <= 8){
+      state.textContent = `Challenge in ${Math.ceil(secondsLeft)}s`;
+    }else if(secondsLeft > 8){
+      state.textContent = "Playing";
     }
 
-    if(t>=cue.pauseAt){
-      openChallenge();
+    if(t >= cue.pauseAt){
+      openCue();
     }
-  },100);
+  }, 100);
 }
 
-function openChallenge(){
-  const cue=CONFIG.challenges[currentChallenge];
-  challengeOpen=true;
+function openCue(){
+  const cue = CONFIG.cues[cueIndex];
+
+  cueOpen = true;
+
   player.pauseVideo();
-  state.textContent=`Gap ${currentChallenge+1} of ${CONFIG.challenges.length}`;
-  setTools(true);
 
-  prevLine.textContent="";
-  nextLine.textContent="";
+  state.textContent = `Gap ${cueIndex + 1} of ${CONFIG.cues.length}`;
 
-  currentLine.innerHTML=
-    `<span>${cue.before} </span>`+
-    `<span class="gap" id="gapView">_____</span>`+
-    `<input class="inline-input show" id="gapInput" autocomplete="off" spellcheck="false" aria-label="Missing word">`+
+  prevLine.textContent = "";
+  nextLine.textContent = "";
+
+  currentLine.innerHTML =
+    `<span>${cue.before} </span>` +
+    `<span class="gap hide" id="gapView">_____</span>` +
+    `<input class="inline-input show" id="gapInput" autocomplete="off" spellcheck="false" aria-label="Missing word">` +
     `<span> ${cue.after}</span>`;
 
-  const gapView=document.getElementById("gapView");
-  gapView.classList.add("hide");
+  enableTools(true);
 
-  const input=document.getElementById("gapInput");
+  const input = document.getElementById("gapInput");
+
   input.focus();
-  input.addEventListener("keydown",e=>{
-    if(e.key==="Enter"){
-      e.preventDefault();
+
+  input.addEventListener("keydown", event => {
+    if(event.key === "Enter"){
+      event.preventDefault();
       checkAnswer();
     }
   });
 
-  feedback.className="feedback neutral";
-  feedback.textContent="";
+  feedback.textContent = "";
+  feedback.className = "feedback neutral";
 }
 
-function normalize(v){
-  return v.trim().toLowerCase().replace(/\s+/g," ");
+function normalize(value){
+  return value.trim().toLowerCase().replace(/\s+/g," ");
 }
 
 function checkAnswer(){
-  if(!challengeOpen) return;
-  const cue=CONFIG.challenges[currentChallenge];
-  const input=document.getElementById("gapInput");
+  if(!cueOpen) return;
+
+  const cue = CONFIG.cues[cueIndex];
+  const input = document.getElementById("gapInput");
+
   if(!input) return;
 
-  const value=normalize(input.value);
+  const value = normalize(input.value);
+
   if(!value){
-    feedback.className="feedback bad";
-    feedback.textContent="Type the missing word.";
+    feedback.className = "feedback bad";
+    feedback.textContent = "Type the missing word.";
     return;
   }
 
-  if(value===cue.answer){
+  if(value === cue.answer){
     hits++;
-    const base=hints===0?100:Math.max(40,100-(hints*25));
-    score+=Math.round(base*bonus);
-    bonus=Math.min(4,bonus+1);
-    solved[currentChallenge]=true;
+    solved++;
 
-    currentLine.innerHTML=
-      `<span>${cue.before} </span><span class="gap">${cue.answer}</span><span> ${cue.after}</span>`;
+    const base = hints === 0 ? 100 : Math.max(40, 100 - (hints * 25));
 
-    feedback.className="feedback good";
-    feedback.textContent="";
+    score += Math.round(base * bonus);
+
+    bonus = Math.min(4, bonus + 1);
+
+    currentLine.innerHTML =
+      `<span>${cue.before} </span>` +
+      `<span class="gap">${cue.answer}</span>` +
+      `<span> ${cue.after}</span>`;
+
+    enableTools(false);
+
+    feedback.textContent = "";
+    feedback.className = "feedback good";
+
     updateStats();
-    setTools(false);
 
-    setTimeout(()=>{
-      currentChallenge++;
-      challengeOpen=false;
-      hints=0;
-      state.textContent="Playing";
-      passiveMessage("Listening");
+    setTimeout(() => {
+      cueIndex++;
+      cueOpen = false;
+      hints = 0;
+
+      state.textContent = "Playing";
+
+      showListening();
+
       player.playVideo();
-    },420);
+    }, 360);
+
   }else{
     fails++;
-    bonus=1;
+    bonus = 1;
+
     updateStats();
-    feedback.className="feedback bad";
-    feedback.textContent="Try again.";
+
+    feedback.className = "feedback bad";
+    feedback.textContent = "Try again.";
+
     input.select();
   }
 }
 
-function replayCurrent(){
-  if(currentChallenge>=CONFIG.challenges.length)return;
-  const cue=CONFIG.challenges[currentChallenge];
+function replayCue(){
+  if(cueIndex >= CONFIG.cues.length) return;
 
-  challengeOpen=false;
-  setTools(false);
-  state.textContent="Listening again";
-  passiveMessage("Replay");
-  player.seekTo(cue.replayFrom,true);
+  const cue = CONFIG.cues[cueIndex];
+
+  cueOpen = false;
+
+  enableTools(false);
+
+  state.textContent = "Listening again";
+
+  showListening();
+
+  player.seekTo(cue.replayFrom, true);
   player.playVideo();
 }
 
-function hint(){
-  if(currentChallenge>=CONFIG.challenges.length)return;
-  const cue=CONFIG.challenges[currentChallenge];
+function giveHint(){
+  if(cueIndex >= CONFIG.cues.length) return;
+
+  const cue = CONFIG.cues[cueIndex];
+
   hints++;
+  bonus = 1;
 
-  const input=document.getElementById("gapInput");
-  if(!input)return;
+  updateStats();
 
-  if(hints===1){
-    feedback.className="feedback neutral";
-    feedback.textContent=`${cue.answer.length} letters`;
+  if(hints === 1){
+    feedback.className = "feedback neutral";
+    feedback.textContent = `${cue.answer.length} letters`;
   }else{
-    feedback.className="feedback neutral";
-    feedback.textContent=`Starts with ${cue.answer[0].toUpperCase()}`;
+    feedback.className = "feedback neutral";
+    feedback.textContent = `Starts with ${cue.answer[0].toUpperCase()}`;
   }
 }
 
-function skip(){
-  if(currentChallenge>=CONFIG.challenges.length)return;
-  const cue=CONFIG.challenges[currentChallenge];
+function skipCue(){
+  if(cueIndex >= CONFIG.cues.length) return;
 
-  currentLine.innerHTML=
-    `<span>${cue.before} </span><span class="gap">${cue.answer}</span><span> ${cue.after}</span>`;
-  bonus=1;
+  const cue = CONFIG.cues[cueIndex];
+
+  currentLine.innerHTML =
+    `<span>${cue.before} </span>` +
+    `<span class="gap">${cue.answer}</span>` +
+    `<span> ${cue.after}</span>`;
+
+  bonus = 1;
+
+  enableTools(false);
   updateStats();
-  setTools(false);
 
-  setTimeout(()=>{
-    currentChallenge++;
-    challengeOpen=false;
-    hints=0;
-    passiveMessage("Listening");
-    state.textContent="Playing";
+  setTimeout(() => {
+    cueIndex++;
+    cueOpen = false;
+    hints = 0;
+
+    state.textContent = "Playing";
+
+    showListening();
+
     player.playVideo();
-  },420);
+  }, 360);
 }
 
 function pauseGame(){
-  if(!player)return;
-  const ps=player.getPlayerState();
+  if(!player) return;
 
-  if(ps===1){
-    userPaused=true;
+  const playerState = player.getPlayerState();
+
+  if(playerState === 1){
+    userPaused = true;
     player.pauseVideo();
     pauseOverlay.classList.add("show");
+
   }else if(userPaused){
     resumeGame();
   }
 }
 
 function resumeGame(){
-  userPaused=false;
+  userPaused = false;
+
   pauseOverlay.classList.remove("show");
-  if(challengeOpen){
-    return;
+
+  if(!cueOpen){
+    player.playVideo();
   }
-  player.playVideo();
 }
 
 function restart(){
-  currentChallenge=0;
-  challengeOpen=false;
-  solved=[];
-  hints=0;
-  hits=0;
-  fails=0;
-  score=0;
-  bonus=1;
-  userPaused=false;
+  cueIndex = 0;
+  cueOpen = false;
+  solved = 0;
+
+  hits = 0;
+  fails = 0;
+  hints = 0;
+  score = 0;
+  bonus = 1;
+
+  userPaused = false;
 
   pauseOverlay.classList.remove("show");
-  setTools(false);
+
+  enableTools(false);
   updateStats();
-  state.textContent="Playing";
-  passiveMessage("Listening");
-  player.seekTo(0,true);
+
+  state.textContent = "Playing";
+
+  showListening();
+
+  player.seekTo(0, true);
   player.playVideo();
 }
 
-startBtn.addEventListener("click",loadYouTube);
-checkBtn.addEventListener("click",checkAnswer);
-replayBtn.addEventListener("click",replayCurrent);
-hintBtn.addEventListener("click",hint);
-skipBtn.addEventListener("click",skip);
-pauseBtn.addEventListener("click",pauseGame);
-resumeBtn.addEventListener("click",resumeGame);
-restartBtn.addEventListener("click",restart);
+startBtn.addEventListener("click", loadYouTube);
+checkBtn.addEventListener("click", checkAnswer);
+replayBtn.addEventListener("click", replayCue);
+hintBtn.addEventListener("click", giveHint);
+skipBtn.addEventListener("click", skipCue);
+pauseBtn.addEventListener("click", pauseGame);
+resumeBtn.addEventListener("click", resumeGame);
+restartBtn.addEventListener("click", restart);
 </script>
 </body>
 </html>
