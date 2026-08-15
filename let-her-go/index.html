@@ -283,6 +283,8 @@ button{cursor:pointer}
 .actions .btn{
   min-height:36px;
   padding:0 12px;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
 }
 #feedback,
 .feedback{
@@ -319,6 +321,7 @@ button{cursor:pointer}
   .lyric-window{min-height:112px}
   #currentLine,.line-current{font-size:26px}
   .facade{padding:18px}
+  .actions .btn{min-height:46px;padding:0 14px}
 }
 
 .pause-overlay{
@@ -979,6 +982,8 @@ let timer = null;
 let cueIndex = 0;
 let cueOpen = false;
 let replayingCue = false;
+let replaySeekPending = false;
+let replayRequestId = 0;
 let liveCueIndex = -1;
 let solved = 0;
 
@@ -1294,9 +1299,26 @@ function startLoop(){
 
       const activeCue = CONFIG.cues[cueIndex];
 
-      if(activeCue && t >= activeCue.pauseAt){
+      if(!activeCue){
+        replayingCue = false;
+        replaySeekPending = false;
+        return;
+      }
+
+      // Mobile YouTube can report the old pause time briefly after seekTo().
+      // Do not stop the replay until the seek has actually moved backwards.
+      if(replaySeekPending){
+        const seekLanded = t < activeCue.pauseAt - 0.55;
+
+        if(!seekLanded) return;
+
+        replaySeekPending = false;
+      }
+
+      if(t >= activeCue.pauseAt){
 
         replayingCue = false;
+        replaySeekPending = false;
 
         try{
           player.pauseVideo();
@@ -1493,9 +1515,12 @@ function replayCue(){
   if(cueIndex >= CONFIG.cues.length) return;
 
   const cue = CONFIG.cues[cueIndex];
+  const requestedCueIndex = cueIndex;
+  const requestId = ++replayRequestId;
 
   cueOpen = true;
   replayingCue = true;
+  replaySeekPending = true;
 
   captionMask.classList.add("show");
 
@@ -1513,21 +1538,42 @@ function replayCue(){
   hintBtn.disabled = false;
   skipBtn.disabled = false;
 
-  // ONE click: seek and start immediately.
+  // Keep playVideo() in the real click event for mobile autoplay policies.
+  // Do not pause first: on mobile that pause command can arrive after play.
   try{
-    player.pauseVideo();
     player.seekTo(cue.replayFrom, true);
     player.playVideo();
   }catch(e){}
 
-  // Some mobile/browser YouTube embeds need one tiny fallback after seek settles.
-  setTimeout(() => {
+  // Mobile YouTube sometimes applies seek and play asynchronously.
+  // Retry only the missing part; never restart a replay that is already running.
+  const ensureReplayStarted = () => {
+    if(
+      requestId !== replayRequestId ||
+      !replayingCue ||
+      cueIndex !== requestedCueIndex
+    ) return;
+
     try{
-      if(player.getPlayerState() !== 1){
+      const currentTime = Number(player.getCurrentTime());
+      const playerState = player.getPlayerState();
+      const seekLanded =
+        Number.isFinite(currentTime) &&
+        currentTime < cue.pauseAt - 0.55;
+
+      if(!seekLanded){
+        player.seekTo(cue.replayFrom, true);
+      }
+
+      if(playerState !== 1 && playerState !== 3){
         player.playVideo();
       }
     }catch(e){}
-  }, 120);
+  };
+
+  [140, 360, 700].forEach(delay => {
+    setTimeout(ensureReplayStarted, delay);
+  });
 }
 
 function giveHint(){
@@ -1618,6 +1664,8 @@ function restart(){
   cueIndex = 0;
   cueOpen = false;
   replayingCue = false;
+  replaySeekPending = false;
+  replayRequestId++;
   liveCueIndex = -1;
   captionMask.classList.remove("show");
   solved = 0;
