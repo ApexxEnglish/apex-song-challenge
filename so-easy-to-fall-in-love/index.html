@@ -938,6 +938,18 @@ const CONFIG = {
   ]
 };
 
+const CUE_END_GRACE = 0.8;
+const LYRIC_END_GRACE = 0.8;
+
+// Always let the final sung word finish before pausing for an answer.
+for(const cue of CONFIG.cues){
+  const safePauseAt = Number(
+    (cue.lineEndsAt + CUE_END_GRACE).toFixed(2)
+  );
+
+  cue.pauseAt = Math.max(cue.pauseAt, safePauseAt);
+}
+
 let player = null;
 let apiLoaded = false;
 let timer = null;
@@ -1023,9 +1035,26 @@ function enableTools(on){
 }
 
 function getTimedLine(t){
+  // Prefer the line that is actively being sung.
   for(const line of CONFIG.lines){
     if(t >= line.start && t < line.end) return line;
   }
+
+  // During a real gap, keep the completed line visible briefly instead
+  // of clearing it before the vocal tail has finished.
+  for(let index = CONFIG.lines.length - 1; index >= 0; index--){
+    const line = CONFIG.lines[index];
+    const nextLine = CONFIG.lines[index + 1];
+
+    if(
+      t >= line.end &&
+      t < line.end + LYRIC_END_GRACE &&
+      (!nextLine || t < nextLine.start)
+    ){
+      return line;
+    }
+  }
+
   return null;
 }
 
