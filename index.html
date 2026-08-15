@@ -525,6 +525,30 @@ button{cursor:pointer}
 body{position:relative}
 img,svg,video,iframe{max-width:100%}
 
+
+/* APEX START CTA V2 */
+.facade #startBtn{
+  min-height:54px;
+  padding:0 30px;
+  border-radius:12px;
+  font-size:17px;
+  font-weight:900;
+  letter-spacing:.01em;
+  box-shadow:0 10px 24px rgba(0,0,0,.18);
+  touch-action:manipulation;
+}
+.facade #startBtn:hover{
+  transform:translateY(-1px);
+}
+@media(max-width:760px){
+  .facade #startBtn{
+    width:min(100%,320px);
+    min-height:54px;
+    padding:0 22px;
+    font-size:17px;
+  }
+}
+
 </style>
 
 </head>
