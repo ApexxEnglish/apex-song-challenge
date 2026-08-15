@@ -367,30 +367,40 @@ button{cursor:pointer}
 
 
 
-.challenge-preview{
-  width:100%;
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  align-items:baseline;
-  gap:.22em;
-  color:var(--navy);
-  font-weight:850;
-  font-size:clamp(23px,3vw,33px);
-  line-height:1.25;
-  letter-spacing:-.02em;
-}
-.preview-blank{
-  display:inline-block;
-  min-width:110px;
-  height:.95em;
-  border-bottom:3px solid var(--gold);
-  transform:translateY(-2px);
-}
 .gap-input{
   width:auto;
   min-width:110px;
   max-width:220px;
+}
+
+
+.intro-ready{
+  width:100%;
+  max-width:720px;
+  margin:0 auto;
+  text-align:center;
+}
+.intro-ready small{
+  display:block;
+  margin-bottom:5px;
+  color:var(--gold);
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
+.intro-ready strong{
+  display:block;
+  color:var(--navy);
+  font-size:clamp(22px,2.7vw,31px);
+  line-height:1.2;
+}
+.intro-ready span{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:600;
 }
 
 </style>
@@ -452,7 +462,7 @@ button{cursor:pointer}
     <div class="lesson">
       <div class="lesson-head">
         <div id="state">Ready</div>
-        <div class="lesson-note">Listen · answer · replay if needed</div>
+        <div class="lesson-note">Lyrics · listen · answer · replay if needed</div>
       </div>
 
       <div class="lyric-window">
@@ -840,6 +850,7 @@ let timer = null;
 let cueIndex = 0;
 let cueOpen = false;
 let replayingCue = false;
+let cuePreviewIndex = -1;
 let solved = 0;
 
 let hits = 0;
@@ -902,6 +913,40 @@ function getTimedLine(t){
   return null;
 }
 
+function renderChallengeInput(cue, focusInput=false){
+  if(cuePreviewIndex !== cueIndex || !document.getElementById("gapInput")){
+    cuePreviewIndex = cueIndex;
+
+    prevLine.textContent = "";
+    nextLine.textContent = "";
+
+    currentLine.innerHTML =
+      `<span>${escapeHtml(cue.before)} </span>` +
+      `<input class="gap-input" id="gapInput" size="${Math.max(5, Math.min(12, cue.answer.length + 2))}" autocomplete="off" spellcheck="false" aria-label="Missing word">` +
+      `<span> ${escapeHtml(cue.after)}</span>`;
+
+    const input = document.getElementById("gapInput");
+
+    if(input){
+      input.addEventListener("keydown", event => {
+        if(event.key === "Enter"){
+          event.preventDefault();
+
+          // Only evaluate after the target line has finished and the video has paused.
+          if(cueOpen){
+            checkAnswer();
+          }
+        }
+      });
+    }
+  }
+
+  if(focusInput){
+    const input = document.getElementById("gapInput");
+    if(input) input.focus();
+  }
+}
+
 function updateListeningPanel(t){
   if(cueOpen) return;
 
@@ -909,20 +954,18 @@ function updateListeningPanel(t){
     ? CONFIG.cues[cueIndex]
     : null;
 
-  // Show the actual gap sentence shortly before the target line starts.
-  // It stays visible while the student hears that line.
-  if(cue && t >= (cue.lineStart - 1.5) && t < cue.lineEndsAt){
+  // The SAME real gap input appears exactly when the target lyric begins.
+  // Student sees it while hearing the singer, then it remains in place when playback pauses.
+  if(cue && t >= cue.lineStart && t <= (cue.lineEndsAt + 0.18)){
     captionMask.classList.add("show");
 
     state.textContent =
       `Challenge ${cueIndex + 1}/${CONFIG.cues.length} · Listen`;
 
-    currentLine.innerHTML =
-      `<div class="challenge-preview">` +
-        `<span>${escapeHtml(cue.before)}</span>` +
-        `<span class="preview-blank" aria-hidden="true"></span>` +
-        `<span>${escapeHtml(cue.after)}</span>` +
-      `</div>`;
+    renderChallengeInput(cue, false);
+
+    feedback.textContent = "";
+    feedback.className = "feedback neutral";
 
     return;
   }
@@ -934,16 +977,50 @@ function updateListeningPanel(t){
 
   if(line){
     currentLine.textContent = line.text;
+    cuePreviewIndex = -1;
+    return;
+  }
+
+  // Fill the long instrumental opening instead of leaving a large empty panel.
+  const firstLineStart = CONFIG.lines.length ? CONFIG.lines[0].start : 0;
+
+  if(t < firstLineStart){
+    currentLine.innerHTML =
+      `<div class="intro-ready">` +
+        `<small>Apex Song Challenge</small>` +
+        `<strong>Ready for the challenge?</strong>` +
+        `<span>Follow the lyrics. When a gap appears, listen and type the missing word.</span>` +
+      `</div>`;
   }else{
-    // No generic listening message between lyric lines.
     currentLine.innerHTML = "";
   }
+
+  cuePreviewIndex = -1;
 }
 
 function showListening(){
   prevLine.textContent = "";
   nextLine.textContent = "";
-  currentLine.innerHTML = "";
+
+  let t = 0;
+  try{
+    if(player && typeof player.getCurrentTime === "function"){
+      t = player.getCurrentTime();
+    }
+  }catch(e){}
+
+  const firstLineStart = CONFIG.lines.length ? CONFIG.lines[0].start : 0;
+
+  if(t < firstLineStart){
+    currentLine.innerHTML =
+      `<div class="intro-ready">` +
+        `<small>Apex Song Challenge</small>` +
+        `<strong>Ready for the challenge?</strong>` +
+        `<span>Follow the lyrics. When a gap appears, listen and type the missing word.</span>` +
+      `</div>`;
+  }else{
+    currentLine.innerHTML = "";
+  }
 
   feedback.textContent = "";
   feedback.className = "feedback neutral";
@@ -1094,13 +1171,6 @@ function startLoop(){
     if(cueIndex >= CONFIG.cues.length) return;
 
     const cue = CONFIG.cues[cueIndex];
-    const secondsLeft = cue.pauseAt - t;
-
-    if(secondsLeft > 0 && secondsLeft <= 8){
-      state.textContent = secondsLeft <= 3 ? "Get ready" : "Listening";
-    }else if(secondsLeft > 8){
-      state.textContent = "Playing";
-    }
 
     if(t >= cue.pauseAt){
       openCue();
@@ -1115,10 +1185,11 @@ function openCue(){
   replayingCue = false;
   captionMask.classList.add("show");
 
-  // Hard stop exactly on the challenge boundary.
+  // Hard stop exactly when the target lyric finishes.
   try{
     player.seekTo(cue.lineEndsAt ?? cue.pauseAt, true);
     player.pauseVideo();
+
     setTimeout(() => {
       try{
         player.seekTo(cue.lineEndsAt ?? cue.pauseAt, true);
@@ -1127,31 +1198,16 @@ function openCue(){
     }, 120);
   }catch(e){}
 
-  state.textContent = `Challenge ${cueIndex + 1}/${CONFIG.cues.length} · Answer`;
+  state.textContent =
+    `Challenge ${cueIndex + 1}/${CONFIG.cues.length} · Answer`;
 
-  prevLine.textContent = "";
-  nextLine.textContent = "";
-
-  currentLine.innerHTML =
-    `<span>${cue.before} </span>` +
-    `<span class="gap hide" id="gapView">_____</span>` +
-    `<input class="gap-input" id="gapInput" size="${Math.max(5, Math.min(12, cue.answer.length + 2))}" autocomplete="off" spellcheck="false" aria-label="Missing word">` +
-    `<span> ${cue.after}</span>`;
+  // If the student entered the line by seeking directly, create it now.
+  // Otherwise preserve the SAME input and anything already typed while listening.
+  renderChallengeInput(cue, true);
 
   enableTools(true);
   checkBtn.textContent = "Check";
   checkBtn.dataset.action = "check";
-
-  const input = document.getElementById("gapInput");
-
-  input.focus();
-
-  input.addEventListener("keydown", event => {
-    if(event.key === "Enter"){
-      event.preventDefault();
-      checkAnswer();
-    }
-  });
 
   feedback.textContent = "";
   feedback.className = "feedback neutral";
@@ -1171,6 +1227,7 @@ function checkAnswer(){
     cueIndex++;
     cueOpen = false;
     replayingCue = false;
+    cuePreviewIndex = -1;
     hints = 0;
     captionMask.classList.remove("show");
 
@@ -1359,6 +1416,7 @@ function restart(){
   cueIndex = 0;
   cueOpen = false;
   replayingCue = false;
+  cuePreviewIndex = -1;
   captionMask.classList.remove("show");
   solved = 0;
 
