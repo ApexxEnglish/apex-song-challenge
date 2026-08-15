@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Apex Song Challenge — V5 Listening Engine</title>
+<title>Apex Song Challenge — V6 Listening Engine</title>
 <meta name="description" content="Apex English Song Challenge — synced listening engine with inline gaps and YouTube captions disabled.">
 
 <style>
@@ -236,8 +236,10 @@ button{cursor:pointer}
 .lyric-window{
   min-height:96px;
   display:flex;
+  flex-direction:column;
   align-items:center;
   justify-content:center;
+  gap:4px;
   text-align:center;
   padding:6px 8px 8px;
 }
@@ -253,6 +255,7 @@ button{cursor:pointer}
 .line-prev,.line-next{
   color:var(--muted);
   font-size:14px;
+  min-height:18px;
 }
 .gap-input{
   display:inline-block;
@@ -370,7 +373,6 @@ button{cursor:pointer}
   font-weight:700;
   letter-spacing:.03em;
 }
-
 
 </style>
 
@@ -606,6 +608,18 @@ function enableTools(on){
   checkBtn.disabled = !on;
 }
 
+// Full solved line (before + answer + after), used for the already-answered
+// previous line so the student can re-read what they just completed.
+function fullLineText(cue){
+  return `${cue.before} ${cue.answer} ${cue.after}`.replace(/\s+/g," ").trim();
+}
+
+// Masked preview of an upcoming line, so context is visible without
+// spoiling the next answer.
+function maskedLineText(cue){
+  return `${cue.before} _____ ${cue.after}`.replace(/\s+/g," ").trim();
+}
+
 function showListening(){
   prevLine.textContent = "";
   nextLine.textContent = "";
@@ -794,8 +808,13 @@ function openCue(){
 
   state.textContent = `Gap ${cueIndex + 1} of ${CONFIG.cues.length} — answer from what you heard`;
 
-  prevLine.textContent = "";
-  nextLine.textContent = "";
+  // Previous line: already solved, safe to show in full for context.
+  // Next line: masked, so context is there without spoiling the coming answer.
+  const prevCue = CONFIG.cues[cueIndex - 1];
+  const nextCue = CONFIG.cues[cueIndex + 1];
+
+  prevLine.textContent = prevCue ? fullLineText(prevCue) : "";
+  nextLine.textContent = nextCue ? maskedLineText(nextCue) : "";
 
   currentLine.innerHTML =
     `<span>${cue.before} </span>` +
@@ -926,7 +945,8 @@ function replayCue(){
     "Listen again. The challenge stays on screen.";
 
   // Do NOT call showListening() here.
-  // That would replace the gap sentence with generic listening text.
+  // That would replace the gap sentence with generic listening text,
+  // and would also wipe the prev/next context lines set in openCue().
 
   checkBtn.disabled = false;
   replayBtn.disabled = true;
