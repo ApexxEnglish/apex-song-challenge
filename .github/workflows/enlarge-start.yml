@@ -1,0 +1,75 @@
+name: Enlarge Start Challenge CTA
+
+on:
+  push:
+    paths:
+      - '.github/workflows/enlarge-start.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-start-cta:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enlarge Start Challenge button without touching game logic
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          marker = '/* APEX START CTA V2 */'
+          css = r'''
+          /* APEX START CTA V2 */
+          .facade #startBtn{
+            min-height:54px;
+            padding:0 30px;
+            border-radius:12px;
+            font-size:17px;
+            font-weight:900;
+            letter-spacing:.01em;
+            box-shadow:0 10px 24px rgba(0,0,0,.18);
+            touch-action:manipulation;
+          }
+          .facade #startBtn:hover{
+            transform:translateY(-1px);
+          }
+          @media(max-width:760px){
+            .facade #startBtn{
+              width:min(100%,320px);
+              min-height:54px;
+              padding:0 22px;
+              font-size:17px;
+            }
+          }
+          '''
+
+          changed = []
+          for path in Path('.').rglob('index.html'):
+            # Perfect is a loader that inherits the root challenge HTML at runtime.
+            if path.as_posix() == 'perfect/index.html':
+              continue
+            text = path.read_text(encoding='utf-8')
+            if marker in text or '</style>' not in text:
+              continue
+            text = text.replace('</style>', css + '\n</style>', 1)
+            path.write_text(text, encoding='utf-8')
+            changed.append(path.as_posix())
+
+          print('Updated:', ', '.join(changed) if changed else 'none')
+          PY
+
+      - name: Commit CTA-only CSS update
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No changes needed"
+            exit 0
+          fi
+          git config user.name "ApexxEnglish"
+          git config user.email "actions@users.noreply.github.com"
+          git add -- '*.html' '**/index.html'
+          git commit -m "Enlarge Start Challenge button across song challenges"
+          git push
