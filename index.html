@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Apex Song Challenge — V6 Listening Engine</title>
+<title>Apex Song Challenge — V5 Listening Engine</title>
 <meta name="description" content="Apex English Song Challenge — synced listening engine with inline gaps and YouTube captions disabled.">
 
 <style>
@@ -236,10 +236,8 @@ button{cursor:pointer}
 .lyric-window{
   min-height:96px;
   display:flex;
-  flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:4px;
   text-align:center;
   padding:6px 8px 8px;
 }
@@ -255,7 +253,6 @@ button{cursor:pointer}
 .line-prev,.line-next{
   color:var(--muted);
   font-size:14px;
-  min-height:18px;
 }
 .gap-input{
   display:inline-block;
@@ -374,6 +371,7 @@ button{cursor:pointer}
   letter-spacing:.03em;
 }
 
+
 </style>
 
 </head>
@@ -391,7 +389,7 @@ button{cursor:pointer}
 
     <div class="stats" aria-label="Game stats">
       <div class="stat"><span>Score</span><strong id="score">0</strong></div>
-      <div class="stat"><span>Gaps</span><strong id="gaps">0/9</strong></div>
+      <div class="stat"><span>Gaps</span><strong id="gaps">0/12</strong></div>
       <div class="stat"><span>Hits</span><strong id="hits">0</strong></div>
       <div class="stat"><span>Fails</span><strong id="fails">0</strong></div>
       <div class="stat"><span>Bonus</span><strong id="bonus">1</strong></div>
@@ -453,9 +451,9 @@ button{cursor:pointer}
     </div>
 
     <div class="footer-note">
-      <span>Full line first</span>
+      <span>Timed lyrics</span>
       <span>·</span>
-      <span>Gap stays visible below during replay</span>
+      <span>Target line hidden before each gap</span>
       <span>·</span>
       <span>9 spaced gaps</span>
     </div>
@@ -465,86 +463,354 @@ button{cursor:pointer}
 const CONFIG = {
   videoId: "YQHsXMglC9A",
   approxDuration: 367,
-
-  /*
-    The engine is built for a licensed synced-lyrics feed.
-    For this prototype, only short challenge snippets are stored locally.
-  */
+  lines: [
+  {
+    "start": 80.0,
+    "end": 83.0,
+    "text": "Hello, it's me"
+  },
+  {
+    "start": 83.0,
+    "end": 91.0,
+    "text": "I was wondering if after all these years you'd like to meet"
+  },
+  {
+    "start": 91.2,
+    "end": 96.5,
+    "text": "To go over everything"
+  },
+  {
+    "start": 96.7,
+    "end": 105.0,
+    "text": "They say that time's supposed to heal ya, but I ain't done much healing"
+  },
+  {
+    "start": 105.1,
+    "end": 110.0,
+    "text": "Hello, can you hear me?"
+  },
+  {
+    "start": 110.1,
+    "end": 116.5,
+    "text": "I'm in California dreaming about who we used to be"
+  },
+  {
+    "start": 116.6,
+    "end": 121.5,
+    "text": "When we were younger and free"
+  },
+  {
+    "start": 121.6,
+    "end": 128.5,
+    "text": "I've forgotten how it felt before the world fell at our feet"
+  },
+  {
+    "start": 128.6,
+    "end": 133.5,
+    "text": "There's such a difference between us"
+  },
+  {
+    "start": 133.6,
+    "end": 138.5,
+    "text": "And a million miles"
+  },
+  {
+    "start": 140.0,
+    "end": 147.0,
+    "text": "Hello from the other side"
+  },
+  {
+    "start": 147.1,
+    "end": 153.5,
+    "text": "I must've called a thousand times"
+  },
+  {
+    "start": 153.6,
+    "end": 160.0,
+    "text": "To tell you I'm sorry for everything that I've done"
+  },
+  {
+    "start": 160.1,
+    "end": 165.5,
+    "text": "But when I call, you never seem to be home"
+  },
+  {
+    "start": 165.6,
+    "end": 172.5,
+    "text": "Hello from the outside"
+  },
+  {
+    "start": 172.6,
+    "end": 178.5,
+    "text": "At least I can say that I've tried"
+  },
+  {
+    "start": 178.6,
+    "end": 186.5,
+    "text": "To tell you I'm sorry for breaking your heart"
+  },
+  {
+    "start": 186.6,
+    "end": 194.5,
+    "text": "But it don't matter, it clearly doesn't tear you apart anymore"
+  },
+  {
+    "start": 196.5,
+    "end": 201.0,
+    "text": "Hello, how are you?"
+  },
+  {
+    "start": 201.1,
+    "end": 208.5,
+    "text": "It's so typical of me to talk about myself, I'm sorry"
+  },
+  {
+    "start": 208.6,
+    "end": 213.5,
+    "text": "I hope that you're well"
+  },
+  {
+    "start": 213.6,
+    "end": 219.0,
+    "text": "Did you ever make it out of that town where nothing ever happened?"
+  },
+  {
+    "start": 220.0,
+    "end": 224.5,
+    "text": "It's no secret that the both of us"
+  },
+  {
+    "start": 224.6,
+    "end": 228.0,
+    "text": "Are running out of time"
+  },
+  {
+    "start": 231.0,
+    "end": 238.5,
+    "text": "So hello from the other side (other side)"
+  },
+  {
+    "start": 238.6,
+    "end": 245.5,
+    "text": "I must've called a thousand times (thousand times)"
+  },
+  {
+    "start": 245.6,
+    "end": 252.5,
+    "text": "To tell you I'm sorry for everything that I've done"
+  },
+  {
+    "start": 252.6,
+    "end": 258.0,
+    "text": "But when I call, you never seem to be home"
+  },
+  {
+    "start": 258.1,
+    "end": 265.5,
+    "text": "Hello from the outside (outside)"
+  },
+  {
+    "start": 265.6,
+    "end": 270.5,
+    "text": "At least I can say that I've tried (I've tried)"
+  },
+  {
+    "start": 270.6,
+    "end": 276.5,
+    "text": "To tell you I'm sorry for breaking your heart"
+  },
+  {
+    "start": 276.6,
+    "end": 283.5,
+    "text": "But it don't matter, it clearly doesn't tear you apart anymore"
+  },
+  {
+    "start": 284.0,
+    "end": 289.0,
+    "text": "Ooh (lows, lows, lows, lows), anymore"
+  },
+  {
+    "start": 289.1,
+    "end": 291.0,
+    "text": "(Highs, highs, highs, highs)"
+  },
+  {
+    "start": 291.1,
+    "end": 296.0,
+    "text": "Ooh (lows, lows, lows, lows), anymore"
+  },
+  {
+    "start": 296.1,
+    "end": 298.0,
+    "text": "(Highs, highs, highs, highs)"
+  },
+  {
+    "start": 298.1,
+    "end": 303.0,
+    "text": "Ooh (lows, lows, lows, lows), anymore"
+  },
+  {
+    "start": 303.1,
+    "end": 305.0,
+    "text": "(Highs, highs, highs, highs)"
+  },
+  {
+    "start": 305.1,
+    "end": 308.5,
+    "text": "Anymore (lows, lows, lows, lows)"
+  },
+  {
+    "start": 310.0,
+    "end": 318.5,
+    "text": "Hello from the other side (other side)"
+  },
+  {
+    "start": 318.6,
+    "end": 325.5,
+    "text": "I must've called a thousand times (thousand times)"
+  },
+  {
+    "start": 325.6,
+    "end": 332.5,
+    "text": "To tell you I'm sorry for everything that I've done"
+  },
+  {
+    "start": 332.6,
+    "end": 338.0,
+    "text": "But when I call, you never seem to be home"
+  },
+  {
+    "start": 338.1,
+    "end": 345.5,
+    "text": "Hello from the outside (outside)"
+  },
+  {
+    "start": 345.6,
+    "end": 350.5,
+    "text": "At least I can say that I've tried (I've tried)"
+  },
+  {
+    "start": 350.6,
+    "end": 356.5,
+    "text": "To tell you I'm sorry for breaking your heart"
+  },
+  {
+    "start": 356.6,
+    "end": 365.0,
+    "text": "But it don't matter, it clearly doesn't tear you apart anymore"
+  }
+],
   cues: [
-    {
-        "replayFrom": 83.0,
-        "lineEndsAt": 91.0,
-        "pauseAt": 91.0,
-        "before": "I was",
-        "answer": "wondering",
-        "after": "if after all these years you'd like to meet"
-    },
-    {
-        "replayFrom": 109.0,
-        "lineEndsAt": 116.5,
-        "pauseAt": 116.5,
-        "before": "I'm in California",
-        "answer": "dreaming",
-        "after": "about who we used to be"
-    },
-    {
-        "replayFrom": 132.0,
-        "lineEndsAt": 138.5,
-        "pauseAt": 138.5,
-        "before": "And a",
-        "answer": "million",
-        "after": "miles"
-    },
-    {
-        "replayFrom": 152.0,
-        "lineEndsAt": 160.0,
-        "pauseAt": 160.0,
-        "before": "To tell you I'm",
-        "answer": "sorry",
-        "after": "for everything that I've done"
-    },
-    {
-        "replayFrom": 179.0,
-        "lineEndsAt": 186.5,
-        "pauseAt": 186.5,
-        "before": "To tell you I'm sorry for",
-        "answer": "breaking",
-        "after": "your heart"
-    },
-    {
-        "replayFrom": 201.0,
-        "lineEndsAt": 208.5,
-        "pauseAt": 208.5,
-        "before": "It's so",
-        "answer": "typical",
-        "after": "of me to talk about myself"
-    },
-    {
-        "replayFrom": 219.0,
-        "lineEndsAt": 228.0,
-        "pauseAt": 228.0,
-        "before": "It's no",
-        "answer": "secret",
-        "after": "that the both of us are running out of time"
-    },
-    {
-        "replayFrom": 270.0,
-        "lineEndsAt": 276.5,
-        "pauseAt": 276.5,
-        "before": "To tell you I'm sorry for breaking your",
-        "answer": "heart",
-        "after": ""
-    },
-    {
-        "replayFrom": 310.0,
-        "lineEndsAt": 318.5,
-        "pauseAt": 318.5,
-        "before": "I must've called a thousand",
-        "answer": "times",
-        "after": ""
-    }
-  ]
-  };
+  {
+    "lineStart": 83.0,
+    "replayFrom": 80.0,
+    "lineEndsAt": 91.0,
+    "pauseAt": 91.0,
+    "before": "I was",
+    "answer": "wondering",
+    "after": "if after all these years you'd like to meet"
+  },
+  {
+    "lineStart": 110.1,
+    "replayFrom": 107.5,
+    "lineEndsAt": 116.5,
+    "pauseAt": 116.5,
+    "before": "I'm in California",
+    "answer": "dreaming",
+    "after": "about who we used to be"
+  },
+  {
+    "lineStart": 133.6,
+    "replayFrom": 131.0,
+    "lineEndsAt": 138.5,
+    "pauseAt": 138.5,
+    "before": "And a",
+    "answer": "million",
+    "after": "miles"
+  },
+  {
+    "lineStart": 153.6,
+    "replayFrom": 151.0,
+    "lineEndsAt": 160.0,
+    "pauseAt": 160.0,
+    "before": "To tell you I'm",
+    "answer": "sorry",
+    "after": "for everything that I've done"
+  },
+  {
+    "lineStart": 178.6,
+    "replayFrom": 176.0,
+    "lineEndsAt": 186.5,
+    "pauseAt": 186.5,
+    "before": "To tell you I'm sorry for",
+    "answer": "breaking",
+    "after": "your heart"
+  },
+  {
+    "lineStart": 201.1,
+    "replayFrom": 198.5,
+    "lineEndsAt": 208.5,
+    "pauseAt": 208.5,
+    "before": "It's so",
+    "answer": "typical",
+    "after": "of me to talk about myself, I'm sorry"
+  },
+  {
+    "lineStart": 224.6,
+    "replayFrom": 222.0,
+    "lineEndsAt": 228.0,
+    "pauseAt": 228.0,
+    "before": "Are running out of",
+    "answer": "time",
+    "after": ""
+  },
+  {
+    "lineStart": 245.6,
+    "replayFrom": 243.0,
+    "lineEndsAt": 252.5,
+    "pauseAt": 252.5,
+    "before": "To tell you I'm sorry for everything that I've",
+    "answer": "done",
+    "after": ""
+  },
+  {
+    "lineStart": 270.6,
+    "replayFrom": 268.0,
+    "lineEndsAt": 276.5,
+    "pauseAt": 276.5,
+    "before": "To tell you I'm sorry for breaking your",
+    "answer": "heart",
+    "after": ""
+  },
+  {
+    "lineStart": 310.0,
+    "replayFrom": 307.0,
+    "lineEndsAt": 318.5,
+    "pauseAt": 318.5,
+    "before": "Hello from the",
+    "answer": "other",
+    "after": "side (other side)"
+  },
+  {
+    "lineStart": 338.1,
+    "replayFrom": 335.5,
+    "lineEndsAt": 345.5,
+    "pauseAt": 345.5,
+    "before": "Hello from the",
+    "answer": "outside",
+    "after": "(outside)"
+  },
+  {
+    "lineStart": 356.6,
+    "replayFrom": 354.0,
+    "lineEndsAt": 365.0,
+    "pauseAt": 365.0,
+    "before": "But it don't matter, it clearly doesn't tear you apart",
+    "answer": "anymore",
+    "after": ""
+  }
+]
+};
 
 let player = null;
 let apiLoaded = false;
@@ -608,16 +874,39 @@ function enableTools(on){
   checkBtn.disabled = !on;
 }
 
-// Full solved line (before + answer + after), used for the already-answered
-// previous line so the student can re-read what they just completed.
-function fullLineText(cue){
-  return `${cue.before} ${cue.answer} ${cue.after}`.replace(/\s+/g," ").trim();
+function getTimedLine(t){
+  for(const line of CONFIG.lines){
+    if(t >= line.start && t < line.end) return line;
+  }
+  return null;
 }
 
-// Masked preview of an upcoming line, so context is visible without
-// spoiling the next answer.
-function maskedLineText(cue){
-  return `${cue.before} _____ ${cue.after}`.replace(/\s+/g," ").trim();
+function updateListeningPanel(t){
+  if(cueOpen) return;
+
+  const cue = cueIndex < CONFIG.cues.length
+    ? CONFIG.cues[cueIndex]
+    : null;
+
+  // Never reveal the full target lyric while the challenge line is being sung.
+  // Cover the YouTube image too, so native captions cannot leak the answer.
+  if(cue && t >= cue.lineStart && t < cue.lineEndsAt){
+    captionMask.classList.add("show");
+    currentLine.innerHTML =
+      `<div class="listen-state"><small>Challenge coming</small>Listen carefully — this line will become a gap.</div>`;
+    return;
+  }
+
+  captionMask.classList.remove("show");
+
+  const line = getTimedLine(t);
+
+  if(line){
+    currentLine.textContent = line.text;
+  }else{
+    currentLine.innerHTML =
+      `<div class="listen-state"><small>Listening</small>Follow the song — the next challenge will appear automatically.</div>`;
+  }
 }
 
 function showListening(){
@@ -720,6 +1009,10 @@ function startLoop(){
       );
     }
 
+    if(!cueOpen){
+      updateListeningPanel(t);
+    }
+
     if(cueOpen && replayingCue){
 
       const activeCue = CONFIG.cues[cueIndex];
@@ -808,13 +1101,8 @@ function openCue(){
 
   state.textContent = `Gap ${cueIndex + 1} of ${CONFIG.cues.length} — answer from what you heard`;
 
-  // Previous line: already solved, safe to show in full for context.
-  // Next line: masked, so context is there without spoiling the coming answer.
-  const prevCue = CONFIG.cues[cueIndex - 1];
-  const nextCue = CONFIG.cues[cueIndex + 1];
-
-  prevLine.textContent = prevCue ? fullLineText(prevCue) : "";
-  nextLine.textContent = nextCue ? maskedLineText(nextCue) : "";
+  prevLine.textContent = "";
+  nextLine.textContent = "";
 
   currentLine.innerHTML =
     `<span>${cue.before} </span>` +
@@ -938,15 +1226,14 @@ function replayCue(){
   captionMask.classList.add("show");
 
   state.textContent =
-    "Listening again — complete the same gap";
+    "Listen again — the same gap stays on screen";
 
   feedback.className = "feedback neutral";
   feedback.textContent =
-    "Listen again. The challenge stays on screen.";
+    "Listen to the same line again, then complete the gap.";
 
   // Do NOT call showListening() here.
-  // That would replace the gap sentence with generic listening text,
-  // and would also wipe the prev/next context lines set in openCue().
+  // That would replace the gap sentence with generic listening text.
 
   checkBtn.disabled = false;
   replayBtn.disabled = true;
