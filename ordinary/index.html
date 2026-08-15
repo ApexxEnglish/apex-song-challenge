@@ -1180,7 +1180,11 @@ window.onYouTubeIframeAPIReady = function(){
         pauseBtn.disabled = false;
         restartBtn.disabled = false;
         progress.disabled = false;
-        progress.max = CONFIG.approxDuration;
+        const actualDuration = Number(event.target.getDuration());
+        progress.max =
+          Number.isFinite(actualDuration) && actualDuration > 0
+            ? actualDuration
+            : CONFIG.approxDuration;
         progress.value = 0;
 
         state.textContent = "Playing";
@@ -1230,7 +1234,7 @@ function startLoop(){
     if(document.activeElement !== progress){
       progress.value = Math.max(
         0,
-        Math.min(CONFIG.approxDuration, t)
+        Math.min(Number(progress.max) || CONFIG.approxDuration, t)
       );
     }
 
@@ -1311,7 +1315,8 @@ function startLoop(){
       // Cover YouTube's final recommendation cards with our own end screen.
       // Audio can continue underneath for the last few seconds.
       const lastLineEnd = CONFIG.lines.length ? CONFIG.lines[CONFIG.lines.length - 1].end : 0;
-      if(t >= Math.max(lastLineEnd + 0.4, CONFIG.approxDuration - 6)){
+      const actualDuration = Number(player.getDuration()) || CONFIG.approxDuration;
+      if(t >= Math.max(lastLineEnd + 0.4, actualDuration - 6)){
         showEndScreen();
       }
       return;
