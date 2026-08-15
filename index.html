@@ -23,7 +23,12 @@
 *{box-sizing:border-box}
 html,body{
   margin:0;
+  width:100%;
+  max-width:100%;
   min-height:100%;
+  overflow-x:hidden;
+  overscroll-behavior-x:none;
+  overscroll-behavior-inline:none;
   background:#fff;
   color:var(--ink);
   font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
@@ -311,6 +316,10 @@ button{cursor:pointer}
 }
 
 @media(max-width:760px){
+  .top,.brand,.stats,.player-strip{min-width:0}
+  .stats{flex:1 1 auto}
+  #progress{min-width:0}
+  #time{min-width:44px}
   .shell{width:calc(100% - 12px);padding-top:8px}
   .top{align-items:flex-start}
   .stats{gap:4px}
@@ -509,6 +518,12 @@ button{cursor:pointer}
 .end-ai-link:hover{
   background:#f7f3e9;
 }
+
+@supports (overflow:clip){
+  html,body{overflow-x:clip}
+}
+body{position:relative}
+img,svg,video,iframe{max-width:100%}
 
 </style>
 
@@ -1703,6 +1718,33 @@ progress.addEventListener("input", () => {
     player.seekTo(nextTime, true);
   }
 });
+</script>
+
+<script>
+(() => {
+  let startX = 0;
+  let startY = 0;
+
+  document.addEventListener("touchstart", event => {
+    if(event.touches.length !== 1) return;
+    startX = event.touches[0].clientX;
+    startY = event.touches[0].clientY;
+  }, { passive: true });
+
+  document.addEventListener("touchmove", event => {
+    if(event.touches.length !== 1) return;
+
+    const target = event.target;
+    if(target instanceof Element && target.closest("#progress,.gap-input")) return;
+
+    const dx = event.touches[0].clientX - startX;
+    const dy = event.touches[0].clientY - startY;
+
+    if(Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)){
+      event.preventDefault();
+    }
+  }, { passive: false });
+})();
 </script>
 </body>
 </html>
