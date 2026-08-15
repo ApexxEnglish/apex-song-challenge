@@ -1,0 +1,1662 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ordinary — Alex Warren | Apex English Song Challenge</title>
+<meta name="description" content="Practise English listening with Alex Warren’s Ordinary in this interactive Apex English song challenge.">
+
+<style>
+:root{
+  --navy:#0b2f52;
+  --navy-2:#123e67;
+  --gold:#d2a145;
+  --cream:#f6f2e8;
+  --paper:#fbfaf7;
+  --ink:#10263d;
+  --muted:#718092;
+  --line:#e6e0d5;
+  --good:#2f7455;
+  --bad:#a64e4e;
+  --shadow:0 20px 60px rgba(8,35,61,.11);
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  min-height:100%;
+  background:#fff;
+  color:var(--ink);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+
+.shell{
+  width:min(1080px,calc(100% - 24px));
+  margin:0 auto;
+  padding:14px 0 34px;
+}
+.top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:10px;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.brand-mark{
+  width:34px;
+  height:34px;
+  border-radius:10px;
+  background:linear-gradient(145deg,var(--navy),var(--navy-2));
+  position:relative;
+  box-shadow:0 9px 22px rgba(8,35,61,.16);
+}
+.brand-mark:after{
+  content:"";
+  position:absolute;
+  left:10px;right:10px;top:16px;
+  height:2px;border-radius:999px;background:var(--gold);
+}
+.brand strong{
+  display:block;
+  font-size:12px;
+  letter-spacing:.13em;
+  color:var(--navy);
+}
+.brand small{
+  display:block;
+  color:var(--muted);
+  margin-top:2px;
+  font-size:10px;
+}
+.stats{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.stat{
+  min-width:64px;
+  padding:6px 9px;
+  border-radius:10px;
+  background:rgba(255,255,255,.8);
+  border:1px solid var(--line);
+  text-align:center;
+}
+.stat span{
+  display:block;
+  color:var(--muted);
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+.stat strong{
+  display:block;
+  color:var(--navy);
+  font-size:13px;
+  margin-top:1px;
+}
+
+.game{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.video-area{
+  background:#071828;
+  padding:0;
+}
+.video{
+  position:relative;
+  width:min(820px,100%);
+  margin:0 auto;
+  aspect-ratio:16/9;
+  background:#07131f;
+}
+#player{
+  width:100%;
+  height:100%;
+}
+.facade{
+  position:absolute;
+  inset:0;
+  z-index:5;
+  display:flex;
+  align-items:flex-end;
+  padding:24px;
+  background:
+    linear-gradient(0deg,rgba(5,18,31,.94),rgba(5,18,31,.05) 70%),
+    url("https://i.ytimg.com/vi/u2ah9tWTkmk/maxresdefault.jpg") center/cover no-repeat;
+}
+.facade.hidden{display:none}
+.facade .kicker{
+  color:var(--gold);
+  font-weight:800;
+  font-size:10px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+.facade h1{
+  color:#fff;
+  margin:5px 0 4px;
+  font-size:clamp(28px,4vw,44px);
+  line-height:1;
+}
+.facade p{
+  margin:0 0 14px;
+  color:rgba(255,255,255,.76);
+  font-size:12px;
+  max-width:520px;
+  line-height:1.45;
+}
+.btn{
+  border:0;
+  border-radius:10px;
+  min-height:38px;
+  padding:0 13px;
+  font-weight:800;
+}
+.btn-primary{
+  background:var(--gold);
+  color:#17130e;
+}
+.btn-secondary{
+  background:#eef3f7;
+  color:var(--navy);
+  border:1px solid #dbe3ea;
+}
+.btn-ghost{
+  background:#fff;
+  color:var(--navy);
+  border:1px solid var(--line);
+}
+
+.player-strip{
+  width:min(820px,100%);
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 12px;
+  background:var(--navy);
+  color:#fff;
+}
+.player-strip .btn{
+  min-height:34px;
+  padding:0 11px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+  color:#fff;
+}
+#progress{
+  flex:1;
+  min-width:80px;
+}
+#time{
+  min-width:54px;
+  font-size:11px;
+  text-align:right;
+  color:rgba(255,255,255,.74);
+  font-variant-numeric:tabular-nums;
+}
+
+.lesson{
+  width:min(820px,100%);
+  margin:0 auto;
+  padding:14px 18px 16px;
+  background:#fff;
+}
+.lesson-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:10px;
+}
+#state{
+  color:var(--navy);
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+.lesson-note{
+  color:var(--muted);
+  font-size:10px;
+}
+.lyric-window{
+  min-height:96px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:6px 8px 8px;
+}
+#currentLine,
+.line-current{
+  width:100%;
+  color:var(--navy);
+  font-weight:850;
+  font-size:clamp(24px,3vw,34px);
+  line-height:1.25;
+  letter-spacing:-.02em;
+}
+.line-prev,.line-next{
+  color:var(--muted);
+  font-size:14px;
+}
+.gap-input{
+  display:inline-block;
+  min-width:130px;
+  max-width:230px;
+  height:39px;
+  padding:0 9px;
+  margin:0 4px;
+  border:0;
+  border-bottom:2px solid var(--gold);
+  background:#fbf7ed;
+  color:var(--navy);
+  font-weight:900;
+  font-size:.95em;
+  text-align:center;
+  outline:none;
+  border-radius:7px 7px 0 0;
+}
+.gap-input:focus{
+  background:#fff9e9;
+  box-shadow:0 0 0 3px rgba(210,161,69,.12);
+}
+.actions{
+  display:flex;
+  justify-content:center;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-top:8px;
+}
+.actions .btn{
+  min-height:36px;
+  padding:0 12px;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+#feedback,
+.feedback{
+  min-height:18px;
+  margin-top:7px;
+  text-align:center;
+  font-size:11px;
+  font-weight:700;
+}
+.feedback.good{color:var(--good)}
+.feedback.bad{color:var(--bad)}
+
+.footer-note{
+  width:min(820px,100%);
+  margin:0 auto;
+  padding:7px 18px 10px;
+  color:#89939f;
+  font-size:9px;
+  text-align:center;
+  border-top:1px solid #f0ece4;
+}
+.footer-note span{
+  margin:0 4px;
+}
+
+@media(max-width:760px){
+  .shell{width:calc(100% - 12px);padding-top:8px}
+  .top{align-items:flex-start}
+  .stats{gap:4px}
+  .stat{min-width:54px;padding:5px 6px}
+  .video{width:100%}
+  .player-strip{width:100%;padding:7px 8px}
+  .lesson{width:100%;padding:12px 12px 14px}
+  .lyric-window{min-height:112px}
+  #currentLine,.line-current{font-size:26px}
+  .facade{padding:18px}
+  .actions .btn{min-height:46px;padding:0 14px}
+}
+
+.pause-overlay{
+  position:absolute;
+  inset:0;
+  z-index:7;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(5,18,31,.42);
+  backdrop-filter:blur(2px);
+}
+.pause-overlay.show{display:flex}
+.pause-card{
+  padding:14px;
+  border-radius:14px;
+  background:rgba(255,255,255,.96);
+  box-shadow:0 16px 46px rgba(0,0,0,.18);
+  text-align:center;
+}
+.pause-card strong{
+  display:block;
+  color:var(--navy);
+  margin-bottom:8px;
+  font-size:13px;
+}
+
+
+.caption-mask{
+  position:absolute;
+  inset:0;
+  z-index:6;
+  display:none;
+  pointer-events:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(7,24,40,.94);
+  backdrop-filter:blur(5px);
+}
+.caption-mask.show{
+  display:flex;
+}
+.caption-mask::after{content:"";}
+
+
+
+.challenge-preview{
+  width:100%;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  align-items:baseline;
+  gap:.22em;
+  color:var(--navy);
+  font-weight:850;
+  font-size:clamp(23px,3vw,33px);
+  line-height:1.25;
+  letter-spacing:-.02em;
+}
+.preview-blank{
+  display:inline-block;
+  min-width:110px;
+  height:.95em;
+  border-bottom:3px solid var(--gold);
+  transform:translateY(-2px);
+}
+.gap-input{
+  width:auto;
+  min-width:110px;
+  max-width:220px;
+}
+
+
+.intro-ready{
+  width:100%;
+  max-width:720px;
+  margin:0 auto;
+  text-align:center;
+}
+.intro-ready small{
+  display:block;
+  margin-bottom:5px;
+  color:var(--gold);
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
+.intro-ready strong{
+  display:block;
+  color:var(--navy);
+  font-size:clamp(22px,2.7vw,31px);
+  line-height:1.2;
+}
+.intro-ready span{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:600;
+}
+.live-challenge{
+  width:100%;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  align-items:center;
+  gap:.22em;
+}
+.live-challenge .gap-input{
+  flex:0 0 auto;
+  width:auto;
+  min-width:115px;
+  max-width:210px;
+}
+
+
+.end-screen{
+  position:absolute;
+  inset:0;
+  z-index:9;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:
+    linear-gradient(145deg,rgba(7,24,40,.96),rgba(11,47,82,.97));
+  color:#fff;
+  text-align:center;
+}
+.end-screen.show{
+  display:flex;
+}
+.end-card{
+  width:min(520px,92%);
+  padding:26px 24px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:18px;
+  background:rgba(255,255,255,.07);
+  box-shadow:0 20px 60px rgba(0,0,0,.22);
+  backdrop-filter:blur(8px);
+}
+.end-kicker{
+  color:var(--gold);
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+.end-card h2{
+  margin:7px 0 7px;
+  color:#fff;
+  font-size:clamp(27px,3.6vw,40px);
+  line-height:1.05;
+}
+.end-card p{
+  margin:0 auto 18px;
+  max-width:420px;
+  color:rgba(255,255,255,.76);
+  font-size:13px;
+  line-height:1.5;
+}
+.end-actions{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.end-actions .btn{
+  min-height:40px;
+}
+.end-ai-link{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:40px;
+  padding:0 14px;
+  border-radius:9px;
+  background:#fff;
+  color:var(--navy);
+  border:1px solid rgba(255,255,255,.2);
+  font-weight:900;
+  text-decoration:none;
+}
+.end-ai-link:hover{
+  background:#f7f3e9;
+}
+
+</style>
+
+</head>
+
+<body>
+<main class="shell">
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"></div>
+      <div>
+        <strong>APEX ENGLISH</strong>
+        <small>Song Challenge</small>
+      </div>
+    </div>
+
+    <div class="stats" aria-label="Game stats">
+      <div class="stat"><span>Score</span><strong id="score">0</strong></div>
+      <div class="stat"><span>Gaps</span><strong id="gaps">0/9</strong></div>
+      <div class="stat"><span>Hits</span><strong id="hits">0</strong></div>
+      <div class="stat"><span>Fails</span><strong id="fails">0</strong></div>
+      <div class="stat"><span>Bonus</span><strong id="bonus">1</strong></div>
+    </div>
+  </header>
+
+  <section class="game">
+    <div class="video-area">
+      <div class="video">
+        <div id="player"></div>
+
+        <div class="end-screen" id="endScreen" aria-hidden="true">
+          <div class="end-card">
+            <div class="end-kicker">Apex Song Challenge</div>
+            <h2>Nice work.</h2>
+            <p>You finished the song. Listen again or continue practising your English with Apex AI Assistant.</p>
+            <div class="end-actions">
+              <button class="btn btn-primary" id="endReplayBtn">Listen Again</button>
+              <a class="end-ai-link" href="https://www.apexenglish.net/ingilizce-asistan" target="_blank" rel="noopener">
+                Practice with AI Assistant
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="caption-mask" id="captionMask" aria-hidden="true"></div>
+
+
+        <div class="pause-overlay" id="pauseOverlay">
+          <div class="pause-card">
+            <strong>Challenge paused</strong>
+            <button class="btn btn-primary" id="resumeBtn">Resume</button>
+          </div>
+        </div>
+
+        <div class="facade" id="facade">
+          <div>
+            <div class="kicker">Interactive Listening</div>
+            <h1>Ordinary</h1>
+            <p>Listen to the line, fill the missing word, then continue the song.</p>
+            <button class="btn btn-primary" id="startBtn">Start Challenge</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="player-strip">
+        <button class="btn" id="pauseBtn" disabled>Pause</button>
+        <button class="btn" id="restartBtn" disabled>Restart</button>
+        <input id="progress" type="range" min="0" max="186" step="0.1" value="0" disabled>
+        <span id="time">0:00</span>
+      </div>
+    </div>
+
+    <div class="lesson">
+      <div class="lesson-head">
+        <div id="state">Ready</div>
+        <div class="lesson-note">Type while listening · Check once · Repeat with one tap</div>
+      </div>
+
+      <div class="lyric-window">
+        <div id="prevLine" class="line-prev"></div>
+        <div id="currentLine" class="line-current">Press Start Challenge to begin.</div>
+        <div id="nextLine" class="line-next"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="checkBtn" disabled>Check</button>
+        <button class="btn btn-secondary" id="replayBtn" disabled>Listen Again</button>
+        <button class="btn btn-ghost" id="hintBtn" disabled>Hint</button>
+        <button class="btn btn-ghost" id="skipBtn" disabled>Skip</button>
+      </div>
+
+      <div id="feedback" class="feedback"></div>
+    </div>
+
+    <div class="footer-note">
+      <span>Timed lyrics</span>
+      <span>·</span>
+      <span>Target line hidden before each gap</span>
+      <span>·</span>
+      <span>9 spaced gaps</span>
+    </div>
+  </section>
+</main>
+<script>
+const CONFIG = {
+  "videoId": "u2ah9tWTkmk",
+  "approxDuration": 186,
+  "lines": [
+    {
+      "start": 8,
+      "end": 11.2,
+      "text": "They say, \"The holy water's watered down"
+    },
+    {
+      "start": 11.2,
+      "end": 13.5,
+      "text": "And this town's lost its faith"
+    },
+    {
+      "start": 13.5,
+      "end": 17.5,
+      "text": "Our colors will fade eventually\""
+    },
+    {
+      "start": 17.5,
+      "end": 21.9,
+      "text": "So if our time is runnin' out, day after day"
+    },
+    {
+      "start": 21.9,
+      "end": 26.5,
+      "text": "We'll make the mundane our masterpiece"
+    },
+    {
+      "start": 26.5,
+      "end": 28.5,
+      "text": "Oh, my, my"
+    },
+    {
+      "start": 28.5,
+      "end": 31.8,
+      "text": "Oh, my, my love"
+    },
+    {
+      "start": 32,
+      "end": 34.6,
+      "text": "I take one look at you"
+    },
+    {
+      "start": 34.6,
+      "end": 37.9,
+      "text": "You're takin' me out of the ordinary"
+    },
+    {
+      "start": 37.9,
+      "end": 41.5,
+      "text": "I want you layin' me down 'til we're dead and buried"
+    },
+    {
+      "start": 41.5,
+      "end": 46.5,
+      "text": "On the edge of your knife, stayin' drunk on your vine"
+    },
+    {
+      "start": 46.5,
+      "end": 50.8,
+      "text": "The angels up in the clouds are jealous, knowin' we found"
+    },
+    {
+      "start": 50.8,
+      "end": 54.7,
+      "text": "Somethin' so out of the ordinary"
+    },
+    {
+      "start": 54.7,
+      "end": 58.7,
+      "text": "You got me kissin' the ground of your sanctuary"
+    },
+    {
+      "start": 58.7,
+      "end": 63.8,
+      "text": "Shatter me with your touch, oh Lord, return me to dust"
+    },
+    {
+      "start": 63.8,
+      "end": 68.6,
+      "text": "The angels up in the clouds are jealous, knowin' we found"
+    },
+    {
+      "start": 70.1,
+      "end": 73.5,
+      "text": "Hopeless hallelujah"
+    },
+    {
+      "start": 74.3,
+      "end": 78.1,
+      "text": "On this side of Heaven's gate"
+    },
+    {
+      "start": 78.1,
+      "end": 81.8,
+      "text": "Oh, my life, how do ya"
+    },
+    {
+      "start": 81.8,
+      "end": 87.4,
+      "text": "Breathe and take my breath away?"
+    },
+    {
+      "start": 88,
+      "end": 89.8,
+      "text": "At your altar, I will pray"
+    },
+    {
+      "start": 89.8,
+      "end": 92.4,
+      "text": "You're the sculptor, I'm the clay"
+    },
+    {
+      "start": 92.4,
+      "end": 94.6,
+      "text": "Oh, my, my"
+    },
+    {
+      "start": 94.6,
+      "end": 97.9,
+      "text": "You're takin' me out of the ordinary"
+    },
+    {
+      "start": 97.9,
+      "end": 101.5,
+      "text": "I want you layin' me down 'til we're dead and buried"
+    },
+    {
+      "start": 101.5,
+      "end": 106.5,
+      "text": "On the edge of your knife, stayin' drunk on your vine"
+    },
+    {
+      "start": 106.5,
+      "end": 111.2,
+      "text": "The angels up in the clouds are jealous, knowin' we found"
+    },
+    {
+      "start": 111.2,
+      "end": 115.2,
+      "text": "Somethin' so out (out) of the ordinary (ordinary)"
+    },
+    {
+      "start": 115.2,
+      "end": 119.2,
+      "text": "You got me kissin' the ground (ground) of your sanctuary (sanctuary)"
+    },
+    {
+      "start": 119.2,
+      "end": 124.2,
+      "text": "Shatter me with your touch, oh Lord, return me to dust"
+    },
+    {
+      "start": 124.2,
+      "end": 128.6,
+      "text": "The angels up in the clouds are jealous, knowin' we found"
+    },
+    {
+      "start": 129.1,
+      "end": 132.7,
+      "text": "Somethin' so heavenly, higher than ecstasy"
+    },
+    {
+      "start": 132.7,
+      "end": 137.5,
+      "text": "Whenever you're next to me, oh my, my"
+    },
+    {
+      "start": 137.5,
+      "end": 141.3,
+      "text": "World was in black and white until I saw your light"
+    },
+    {
+      "start": 141.3,
+      "end": 145.5,
+      "text": "I thought you had to die to find"
+    },
+    {
+      "start": 145.5,
+      "end": 148.9,
+      "text": "Somethin' so out of the ordinary"
+    },
+    {
+      "start": 148.9,
+      "end": 152.7,
+      "text": "I want you layin' me down 'til we're dead and buried"
+    },
+    {
+      "start": 153.4,
+      "end": 158.2,
+      "text": "On the edge of your knife, stayin' drunk on your vine"
+    },
+    {
+      "start": 158.2,
+      "end": 162.7,
+      "text": "The angels up in the clouds are jealous, knowin' we found"
+    },
+    {
+      "start": 163.1,
+      "end": 167.1,
+      "text": "Somethin' so out (out) of the ordinary"
+    },
+    {
+      "start": 167.1,
+      "end": 171.1,
+      "text": "You got me kissin' the ground (ground) of your sanctuary (sanctuary)"
+    },
+    {
+      "start": 171.1,
+      "end": 176.1,
+      "text": "Shatter me with your touch, oh Lord, return me to dust"
+    },
+    {
+      "start": 176.1,
+      "end": 180.6,
+      "text": "The angels up in the clouds are jealous, knowin' we found"
+    }
+  ],
+  "cues": [
+    {
+      "lineStart": 21.9,
+      "replayFrom": 19.3,
+      "lineEndsAt": 26.5,
+      "pauseAt": 27.3,
+      "before": "We'll make the",
+      "answer": "mundane",
+      "after": "our masterpiece"
+    },
+    {
+      "lineStart": 34.6,
+      "replayFrom": 32,
+      "lineEndsAt": 37.9,
+      "pauseAt": 38.7,
+      "before": "You're takin' me out of the",
+      "answer": "ordinary",
+      "after": ""
+    },
+    {
+      "lineStart": 54.7,
+      "replayFrom": 52.1,
+      "lineEndsAt": 58.7,
+      "pauseAt": 59.5,
+      "before": "You got me kissin' the ground of your",
+      "answer": "sanctuary",
+      "after": ""
+    },
+    {
+      "lineStart": 81.8,
+      "replayFrom": 79.2,
+      "lineEndsAt": 87.4,
+      "pauseAt": 87.8,
+      "before": "Breathe and take my",
+      "answer": "breath",
+      "after": "away?"
+    },
+    {
+      "lineStart": 89.8,
+      "replayFrom": 87.2,
+      "lineEndsAt": 92.4,
+      "pauseAt": 92.5,
+      "before": "You're the sculptor, I'm the",
+      "answer": "clay",
+      "after": ""
+    },
+    {
+      "lineStart": 111.2,
+      "replayFrom": 108.6,
+      "lineEndsAt": 115.2,
+      "pauseAt": 115.3,
+      "before": "Somethin' so out (out) of the",
+      "answer": "ordinary",
+      "after": "(ordinary)"
+    },
+    {
+      "lineStart": 129.1,
+      "replayFrom": 126.5,
+      "lineEndsAt": 132.7,
+      "pauseAt": 132.8,
+      "before": "Somethin' so heavenly, higher than",
+      "answer": "ecstasy",
+      "after": ""
+    },
+    {
+      "lineStart": 137.5,
+      "replayFrom": 134.9,
+      "lineEndsAt": 141.3,
+      "pauseAt": 141.4,
+      "before": "World was in black and white until I saw your",
+      "answer": "light",
+      "after": ""
+    },
+    {
+      "lineStart": 171.1,
+      "replayFrom": 168.5,
+      "lineEndsAt": 176.1,
+      "pauseAt": 176.2,
+      "before": "Shatter me with your touch, oh Lord, return me to",
+      "answer": "dust",
+      "after": ""
+    }
+  ]
+};
+
+let player = null;
+let apiLoaded = false;
+let timer = null;
+
+let cueIndex = 0;
+let cueOpen = false;
+let replayingCue = false;
+let replaySeekPending = false;
+let replayRequestId = 0;
+let liveCueIndex = -1;
+let solved = 0;
+
+let hits = 0;
+let fails = 0;
+let hints = 0;
+let score = 0;
+let bonus = 1;
+
+let userPaused = false;
+
+const $ = id => document.getElementById(id);
+
+const startBtn = $("startBtn");
+const facade = $("facade");
+const pauseBtn = $("pauseBtn");
+const progress = $("progress");
+const state = $("state");
+const time = $("time");
+
+const prevLine = $("prevLine");
+const currentLine = $("currentLine");
+const nextLine = $("nextLine");
+
+const replayBtn = $("replayBtn");
+const hintBtn = $("hintBtn");
+const skipBtn = $("skipBtn");
+const checkBtn = $("checkBtn");
+const feedback = $("feedback");
+
+const pauseOverlay = $("pauseOverlay");
+const resumeBtn = $("resumeBtn");
+const restartBtn = $("restartBtn");
+const captionMask = $("captionMask");
+const endScreen = $("endScreen");
+const endReplayBtn = $("endReplayBtn");
+
+function fmt(sec){
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60).toString().padStart(2,"0");
+  return `${m}:${s}`;
+}
+
+function showEndScreen(){
+  endScreen.classList.add("show");
+  endScreen.setAttribute?.("aria-hidden","false");
+
+  captionMask.classList.remove("show");
+  enableTools(false);
+
+  state.textContent = "Song complete";
+  currentLine.innerHTML = "";
+  feedback.textContent = "";
+}
+
+function hideEndScreen(){
+  endScreen.classList.remove("show");
+  endScreen.setAttribute?.("aria-hidden","true");
+}
+
+function updateStats(){
+  $("score").textContent = score;
+  $("gaps").textContent = `${solved}/${CONFIG.cues.length}`;
+  $("hits").textContent = hits;
+  $("fails").textContent = fails;
+  $("bonus").textContent = `x${bonus}`;
+}
+
+function enableTools(on){
+  replayBtn.disabled = !on;
+  hintBtn.disabled = !on;
+  skipBtn.disabled = !on;
+  checkBtn.disabled = !on;
+}
+
+function getTimedLine(t){
+  for(const line of CONFIG.lines){
+    if(t >= line.start && t < line.end) return line;
+  }
+  return null;
+}
+
+function escapeHtml(value){
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;");
+}
+
+function renderLiveChallenge(cue, focus=false){
+  const existing = document.getElementById("gapInput");
+
+  if(liveCueIndex !== cueIndex || !existing){
+    liveCueIndex = cueIndex;
+
+    prevLine.textContent = "";
+    nextLine.textContent = "";
+
+    currentLine.innerHTML =
+      `<div class="live-challenge">` +
+        `<span>${escapeHtml(cue.before)}</span>` +
+        `<input class="gap-input" id="gapInput" size="${Math.max(5, Math.min(12, cue.answer.length + 2))}" autocomplete="off" spellcheck="false" aria-label="Missing word">` +
+        `<span>${escapeHtml(cue.after)}</span>` +
+      `</div>`;
+
+    const input = document.getElementById("gapInput");
+
+    if(input){
+      input.addEventListener("keydown", event => {
+        if(
+          event.key === "Enter" &&
+          (cueOpen || liveCueIndex === cueIndex)
+        ){
+          event.preventDefault();
+          checkAnswer();
+        }
+      });
+    }
+  }
+
+  if(focus){
+    const input = document.getElementById("gapInput");
+    if(input) input.focus();
+  }
+}
+
+function updateListeningPanel(t){
+  if(cueOpen) return;
+
+  const cue = cueIndex < CONFIG.cues.length
+    ? CONFIG.cues[cueIndex]
+    : null;
+
+  // As soon as the singer starts the target line, show the actual challenge.
+  // It is the SAME input that remains after the line finishes.
+  if(cue && t >= cue.lineStart && t < cue.pauseAt){
+    captionMask.classList.add("show");
+
+    state.textContent =
+      `Challenge ${cueIndex + 1}/${CONFIG.cues.length} · Listen & type`;
+
+    renderLiveChallenge(cue, false);
+
+    // Student can type and press Check WHILE the song is still playing.
+    checkBtn.disabled = false;
+    checkBtn.textContent = "Check";
+    checkBtn.dataset.action = "check";
+
+    // These become available only if the line ends without a correct answer.
+    replayBtn.disabled = true;
+    hintBtn.disabled = true;
+    skipBtn.disabled = true;
+
+    feedback.textContent = "";
+    feedback.className = "feedback neutral";
+    return;
+  }
+
+  captionMask.classList.remove("show");
+  enableTools(false);
+  state.textContent = "Playing";
+
+  const line = getTimedLine(t);
+
+  if(line){
+    currentLine.textContent = line.text;
+    liveCueIndex = -1;
+    return;
+  }
+
+  // Use the long instrumental opening instead of leaving the panel empty.
+  const firstLineStart = CONFIG.lines.length ? CONFIG.lines[0].start : 0;
+
+  if(t < firstLineStart){
+    currentLine.innerHTML =
+      `<div class="intro-ready">` +
+        `<small>Apex Song Challenge</small>` +
+        `<strong>Ready for the challenge?</strong>` +
+        `<span>Follow the lyrics. When a gap appears, listen and type the missing word.</span>` +
+      `</div>`;
+  }else{
+    currentLine.innerHTML = "";
+  }
+
+  liveCueIndex = -1;
+}
+
+function showListening(){
+  prevLine.textContent = "";
+  nextLine.textContent = "";
+
+  let t = 0;
+  try{
+    if(player && typeof player.getCurrentTime === "function"){
+      t = player.getCurrentTime();
+    }
+  }catch(e){}
+
+  const firstLineStart = CONFIG.lines.length ? CONFIG.lines[0].start : 0;
+
+  if(t < firstLineStart){
+    currentLine.innerHTML =
+      `<div class="intro-ready">` +
+        `<small>Apex Song Challenge</small>` +
+        `<strong>Ready for the challenge?</strong>` +
+        `<span>Follow the lyrics. When a gap appears, listen and type the missing word.</span>` +
+      `</div>`;
+  }else{
+    currentLine.innerHTML = "";
+  }
+
+  feedback.textContent = "";
+  feedback.className = "feedback neutral";
+  captionMask.classList.remove("show");
+}
+
+function loadYouTube(){
+  if(apiLoaded) return;
+
+  apiLoaded = true;
+  state.textContent = "Loading";
+
+  const script = document.createElement("script");
+  script.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(script);
+}
+
+window.onYouTubeIframeAPIReady = function(){
+  player = new YT.Player("player", {
+    width: "100%",
+    height: "100%",
+    videoId: CONFIG.videoId,
+
+    playerVars: {
+      playsinline: 1,
+      rel: 0,
+      controls: 0,
+      disablekb: 1,
+
+      // YouTube native captions stay off.
+      cc_load_policy: 0,
+      hl: "en"
+    },
+
+    events: {
+      onReady: event => {
+        facade.classList.add("hidden");
+
+        // Enable the student player controls only after YouTube is ready.
+        pauseBtn.disabled = false;
+        restartBtn.disabled = false;
+        progress.disabled = false;
+        progress.max = CONFIG.approxDuration;
+        progress.value = 0;
+
+        state.textContent = "Playing";
+        showListening();
+        event.target.playVideo();
+        startLoop();
+
+        // Ask YouTube captions module to unload if available.
+        try {
+          event.target.unloadModule("captions");
+          event.target.unloadModule("cc");
+        } catch (e) {}
+      },
+
+      onStateChange: event => {
+        // Re-apply caption suppression if YouTube reloads modules.
+        try {
+          player.unloadModule("captions");
+          player.unloadModule("cc");
+        } catch (e) {}
+
+        if(event.data === 0){
+          showEndScreen();
+        }
+      },
+
+      onError: event => {
+        state.textContent = "Player error";
+        feedback.className = "feedback bad";
+        feedback.textContent = `YouTube error ${event.data}`;
+      }
+    }
+  });
+};
+
+function startLoop(){
+  clearInterval(timer);
+
+  timer = setInterval(() => {
+    if(!player || typeof player.getCurrentTime !== "function") return;
+
+    const t = player.getCurrentTime();
+
+    time.textContent = fmt(t);
+
+    // <input type="range"> uses value, not CSS width, for playback position.
+    if(document.activeElement !== progress){
+      progress.value = Math.max(
+        0,
+        Math.min(CONFIG.approxDuration, t)
+      );
+    }
+
+    if(!cueOpen){
+      updateListeningPanel(t);
+    }
+
+    if(cueOpen && replayingCue){
+
+      const activeCue = CONFIG.cues[cueIndex];
+
+      if(!activeCue){
+        replayingCue = false;
+        replaySeekPending = false;
+        return;
+      }
+
+      // Mobile YouTube can report the old pause time briefly after seekTo().
+      // Do not stop the replay until the seek has actually moved backwards.
+      if(replaySeekPending){
+        const seekLanded = t < activeCue.pauseAt - 0.55;
+
+        if(!seekLanded) return;
+
+        replaySeekPending = false;
+      }
+
+      if(t >= activeCue.pauseAt){
+
+        replayingCue = false;
+        replaySeekPending = false;
+
+        try{
+          player.pauseVideo();
+          player.seekTo(activeCue.pauseAt, true);
+          player.pauseVideo();
+        }catch(e){}
+
+        // Keep the video covered so YouTube captions cannot reveal the answer.
+        captionMask.classList.add("show");
+
+        state.textContent =
+          `Gap ${cueIndex + 1} of ${CONFIG.cues.length}`;
+
+        feedback.className = "feedback neutral";
+        feedback.textContent =
+          "Now complete the missing word.";
+
+        replayBtn.disabled = false;
+
+        const input = document.getElementById("gapInput");
+
+        if(input){
+          input.focus();
+        }
+      }
+
+      return;
+    }
+
+    if(cueOpen){
+      try{
+        const ps = player.getPlayerState();
+        if(ps === 1 || ps === 3){
+          player.pauseVideo();
+        }
+
+        const activeCue = CONFIG.cues[cueIndex];
+        if(activeCue && t > activeCue.pauseAt + 0.20){
+          player.seekTo(activeCue.pauseAt, true);
+          player.pauseVideo();
+        }
+      }catch(e){}
+      return;
+    }
+
+    if(cueIndex >= CONFIG.cues.length){
+      // Cover YouTube's final recommendation cards with our own end screen.
+      // Audio can continue underneath for the last few seconds.
+      const lastLineEnd = CONFIG.lines.length ? CONFIG.lines[CONFIG.lines.length - 1].end : 0;
+      if(t >= Math.max(lastLineEnd + 0.4, CONFIG.approxDuration - 6)){
+        showEndScreen();
+      }
+      return;
+    }
+
+    const cue = CONFIG.cues[cueIndex];
+    const secondsLeft = cue.pauseAt - t;
+
+    if(secondsLeft > 0 && secondsLeft <= 8){
+      state.textContent = secondsLeft <= 3 ? "Get ready" : "Listening";
+    }else if(secondsLeft > 8){
+      state.textContent = "Playing";
+    }
+
+    if(t >= cue.pauseAt){
+      openCue();
+    }
+  }, 100);
+}
+
+function openCue(){
+  const cue = CONFIG.cues[cueIndex];
+
+  cueOpen = true;
+  replayingCue = false;
+  captionMask.classList.add("show");
+
+  // The loop calls this only AFTER pauseAt, which is 0.8s after lineEndsAt.
+  // Do not seek backwards here: that used to cut off the final word.
+  try{
+    player.pauseVideo();
+  }catch(e){}
+
+  state.textContent =
+    `Challenge ${cueIndex + 1}/${CONFIG.cues.length} · Answer`;
+
+  // Keep the SAME input and anything already typed while listening.
+  renderLiveChallenge(cue, true);
+
+  // Once paused, all challenge tools are available.
+  enableTools(true);
+  checkBtn.textContent = "Check";
+  checkBtn.dataset.action = "check";
+
+  feedback.textContent = "";
+  feedback.className = "feedback neutral";
+}
+
+function normalize(value){
+  return value.trim().toLowerCase().replace(/\s+/g," ");
+}
+
+function checkAnswer(){
+  const liveActive =
+    liveCueIndex === cueIndex &&
+    !!document.getElementById("gapInput");
+
+  if(!cueOpen && !liveActive) return;
+  if(cueIndex >= CONFIG.cues.length) return;
+
+  const cue = CONFIG.cues[cueIndex];
+  const input = document.getElementById("gapInput");
+
+  if(!input) return;
+
+  const value = normalize(input.value);
+
+  if(!value){
+    feedback.className = "feedback bad";
+    feedback.textContent = "Type the missing word.";
+    return;
+  }
+
+  if(value === normalize(cue.answer)){
+    const wasPaused = cueOpen;
+
+    hits++;
+    solved++;
+
+    const base =
+      hints === 0
+        ? 100
+        : Math.max(40, 100 - (hints * 25));
+
+    score += Math.round(base * bonus);
+    bonus = Math.min(4, bonus + 1);
+
+    currentLine.innerHTML =
+      `<span>${escapeHtml(cue.before)} </span>` +
+      `<span class="gap">${escapeHtml(cue.answer)}</span>` +
+      `<span> ${escapeHtml(cue.after)}</span>`;
+
+    feedback.className = "feedback good";
+    feedback.textContent = "Correct.";
+    state.textContent = "Correct";
+
+    // Finish this challenge immediately. No separate Continue click.
+    cueIndex++;
+    cueOpen = false;
+    replayingCue = false;
+    liveCueIndex = -1;
+    hints = 0;
+
+    captionMask.classList.remove("show");
+    enableTools(false);
+    updateStats();
+
+    if(wasPaused){
+      // Let the student see "Correct" briefly, then continue automatically.
+      setTimeout(() => {
+        feedback.textContent = "";
+        state.textContent = "Playing";
+        showListening();
+
+        try{
+          player.playVideo();
+        }catch(e){}
+      }, 750);
+    }else{
+      // Correct answer while the song is still playing:
+      // do NOT interrupt the music.
+      setTimeout(() => {
+        if(!cueOpen){
+          feedback.textContent = "";
+          state.textContent = "Playing";
+        }
+      }, 650);
+    }
+
+  }else{
+    fails++;
+    bonus = 1;
+
+    updateStats();
+
+    feedback.className = "feedback bad";
+    feedback.textContent = "Try again.";
+
+    input.select();
+  }
+}
+
+function replayCue(){
+
+  if(cueIndex >= CONFIG.cues.length) return;
+
+  const cue = CONFIG.cues[cueIndex];
+  const requestedCueIndex = cueIndex;
+  const requestId = ++replayRequestId;
+
+  cueOpen = true;
+  replayingCue = true;
+  replaySeekPending = true;
+
+  captionMask.classList.add("show");
+
+  state.textContent =
+    `Challenge ${cueIndex + 1}/${CONFIG.cues.length} · Repeat`;
+
+  feedback.className = "feedback neutral";
+  feedback.textContent = "Listen again, then answer.";
+
+  // Keep the same challenge input visible.
+  renderLiveChallenge(cue, false);
+
+  checkBtn.disabled = false;
+  replayBtn.disabled = false;
+  hintBtn.disabled = false;
+  skipBtn.disabled = false;
+
+  // Keep playVideo() in the real click event for mobile autoplay policies.
+  // Do not pause first: on mobile that pause command can arrive after play.
+  try{
+    player.seekTo(cue.replayFrom, true);
+    player.playVideo();
+  }catch(e){}
+
+  // Mobile YouTube sometimes applies seek and play asynchronously.
+  // Retry only the missing part; never restart a replay that is already running.
+  const ensureReplayStarted = () => {
+    if(
+      requestId !== replayRequestId ||
+      !replayingCue ||
+      cueIndex !== requestedCueIndex
+    ) return;
+
+    try{
+      const currentTime = Number(player.getCurrentTime());
+      const playerState = player.getPlayerState();
+      const seekLanded =
+        Number.isFinite(currentTime) &&
+        currentTime < cue.pauseAt - 0.55;
+
+      if(!seekLanded){
+        player.seekTo(cue.replayFrom, true);
+      }
+
+      if(playerState !== 1 && playerState !== 3){
+        player.playVideo();
+      }
+    }catch(e){}
+  };
+
+  [140, 360, 700].forEach(delay => {
+    setTimeout(ensureReplayStarted, delay);
+  });
+}
+
+function giveHint(){
+  if(cueIndex >= CONFIG.cues.length) return;
+
+  const cue = CONFIG.cues[cueIndex];
+
+  hints++;
+  bonus = 1;
+
+  updateStats();
+
+  if(hints === 1){
+    feedback.className = "feedback neutral";
+    feedback.textContent = `${cue.answer.length} letters`;
+  }else{
+    feedback.className = "feedback neutral";
+    feedback.textContent = `Starts with ${cue.answer[0].toUpperCase()}`;
+  }
+}
+
+function skipCue(){
+  if(cueIndex >= CONFIG.cues.length) return;
+
+  const cue = CONFIG.cues[cueIndex];
+
+  currentLine.innerHTML =
+    `<span>${cue.before} </span>` +
+    `<span class="gap">${cue.answer}</span>` +
+    `<span> ${cue.after}</span>`;
+
+  bonus = 1;
+
+  feedback.className = "feedback neutral";
+  feedback.textContent = "Answer shown — continuing shortly.";
+
+  enableTools(false);
+  checkBtn.textContent = "Check";
+  checkBtn.dataset.action = "check";
+  updateStats();
+
+  setTimeout(() => {
+    cueIndex++;
+    cueOpen = false;
+    replayingCue = false;
+    liveCueIndex = -1;
+    hints = 0;
+    captionMask.classList.remove("show");
+
+    state.textContent = "Playing";
+
+    showListening();
+
+    player.playVideo();
+  }, 1200);
+}
+
+function pauseGame(){
+  if(!player) return;
+
+  const playerState = player.getPlayerState();
+
+  if(playerState === 1){
+    userPaused = true;
+    player.pauseVideo();
+    pauseBtn.textContent = "Resume";
+    pauseOverlay.classList.add("show");
+
+  }else if(userPaused){
+    resumeGame();
+  }
+}
+
+function resumeGame(){
+  userPaused = false;
+  pauseBtn.textContent = "Pause";
+
+  pauseOverlay.classList.remove("show");
+
+  if(!cueOpen){
+    player.playVideo();
+  }
+}
+
+function restart(){
+  hideEndScreen();
+
+  cueIndex = 0;
+  cueOpen = false;
+  replayingCue = false;
+  replaySeekPending = false;
+  replayRequestId++;
+  liveCueIndex = -1;
+  captionMask.classList.remove("show");
+  solved = 0;
+
+  hits = 0;
+  fails = 0;
+  hints = 0;
+  score = 0;
+  bonus = 1;
+
+  userPaused = false;
+  pauseBtn.textContent = "Pause";
+
+  pauseOverlay.classList.remove("show");
+
+  enableTools(false);
+  checkBtn.textContent = "Check";
+  checkBtn.dataset.action = "check";
+  updateStats();
+
+  state.textContent = "Playing";
+
+  showListening();
+
+  player.seekTo(0, true);
+  player.playVideo();
+}
+
+startBtn.addEventListener("click", loadYouTube);
+checkBtn.addEventListener("click", checkAnswer);
+replayBtn.addEventListener("click", replayCue);
+hintBtn.addEventListener("click", giveHint);
+skipBtn.addEventListener("click", skipCue);
+pauseBtn.addEventListener("click", pauseGame);
+resumeBtn.addEventListener("click", resumeGame);
+restartBtn.addEventListener("click", restart);
+endReplayBtn.addEventListener("click", restart);
+
+progress.addEventListener("input", () => {
+  if(!player || cueOpen) return;
+
+  const nextTime = Number(progress.value);
+
+  if(Number.isFinite(nextTime)){
+    player.seekTo(nextTime, true);
+  }
+});
+</script>
+</body>
+</html>
