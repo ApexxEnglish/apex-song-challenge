@@ -496,7 +496,7 @@ button{cursor:pointer}
     <div class="lesson">
       <div class="lesson-head">
         <div id="state">Ready</div>
-        <div class="lesson-note">Type while listening · Check once · auto-continue</div>
+        <div class="lesson-note">Type while listening · Check once · Repeat with one tap</div>
       </div>
 
       <div class="lyric-window">
@@ -690,78 +690,78 @@ const CONFIG = {
     "text": "But it don't matter, it clearly doesn't tear you apart anymore"
   },
   {
-    "start": 284.0,
-    "end": 289.0,
+    "start": 281.0,
+    "end": 284.0,
     "text": "Ooh (lows, lows, lows, lows), anymore"
   },
   {
-    "start": 289.1,
-    "end": 291.0,
+    "start": 284.0,
+    "end": 288.0,
     "text": "(Highs, highs, highs, highs)"
   },
   {
-    "start": 291.1,
+    "start": 288.0,
+    "end": 290.0,
+    "text": "Ooh (lows, lows, lows, lows), anymore"
+  },
+  {
+    "start": 290.0,
+    "end": 294.0,
+    "text": "(Highs, highs, highs, highs)"
+  },
+  {
+    "start": 294.0,
     "end": 296.0,
     "text": "Ooh (lows, lows, lows, lows), anymore"
   },
   {
-    "start": 296.1,
-    "end": 298.0,
+    "start": 296.0,
+    "end": 300.0,
     "text": "(Highs, highs, highs, highs)"
   },
   {
-    "start": 298.1,
-    "end": 303.0,
-    "text": "Ooh (lows, lows, lows, lows), anymore"
-  },
-  {
-    "start": 303.1,
-    "end": 305.0,
-    "text": "(Highs, highs, highs, highs)"
-  },
-  {
-    "start": 305.1,
-    "end": 308.5,
+    "start": 300.0,
+    "end": 302.0,
     "text": "Anymore (lows, lows, lows, lows)"
   },
   {
-    "start": 310.0,
-    "end": 318.5,
+    "start": 302.0,
+    "end": 311.0,
     "text": "Hello from the other side (other side)"
   },
   {
-    "start": 318.6,
-    "end": 325.5,
+    "start": 311.0,
+    "end": 315.0,
     "text": "I must've called a thousand times (thousand times)"
   },
   {
-    "start": 325.6,
-    "end": 332.5,
+    "start": 315.0,
+    "end": 319.0,
     "text": "To tell you I'm sorry for everything that I've done"
   },
   {
-    "start": 332.6,
-    "end": 338.0,
+    "start": 319.0,
+    "end": 322.0,
     "text": "But when I call, you never seem to be home"
   },
   {
-    "start": 338.1,
-    "end": 345.5,
+    "start": 322.0,
+    "end": 333.0,
     "text": "Hello from the outside (outside)"
   },
   {
-    "start": 345.6,
-    "end": 350.5,
+    "start": 333.0,
+    "end": 336.0,
     "text": "At least I can say that I've tried (I've tried)"
   },
   {
-    "start": 350.6,
-    "end": 356.5,
+    "start": 336.0,
+    "end": 343.0,
     "text": "To tell you I'm sorry for breaking your heart"
   },
   {
-    "start": 356.6,
-    "end": 365.0,
+    "start": 343.0,
+    "end": 348.0,
     "text": "But it don't matter, it clearly doesn't tear you apart anymore"
   }
 ],
@@ -848,31 +848,31 @@ const CONFIG = {
     "after": ""
   },
   {
-    "lineStart": 298.1,
-    "replayFrom": 295.5,
-    "lineEndsAt": 303.0,
-    "pauseAt": 303.8,
-    "before": "Ooh (lows, lows, lows, lows),",
+    "lineStart": 300.0,
+    "replayFrom": 297.5,
+    "lineEndsAt": 302.0,
+    "pauseAt": 302.8,
+    "before": "",
+    "answer": "anymore",
+    "after": "(lows, lows, lows, lows)"
+  },
+  {
+    "lineStart": 322.0,
+    "replayFrom": 319.5,
+    "lineEndsAt": 333.0,
+    "pauseAt": 333.8,
+    "before": "Hello from the",
+    "answer": "outside",
+    "after": "(outside)"
+  },
+  {
+    "lineStart": 343.0,
+    "replayFrom": 340.5,
+    "lineEndsAt": 348.0,
+    "pauseAt": 348.8,
+    "before": "But it don't matter, it clearly doesn't tear you apart",
     "answer": "anymore",
     "after": ""
-  },
-  {
-    "lineStart": 318.6,
-    "replayFrom": 316.0,
-    "lineEndsAt": 325.5,
-    "pauseAt": 326.3,
-    "before": "I must've called a",
-    "answer": "thousand",
-    "after": "times (thousand times)"
-  },
-  {
-    "lineStart": 345.6,
-    "replayFrom": 343.0,
-    "lineEndsAt": 350.5,
-    "pauseAt": 351.3,
-    "before": "At least I can say that I've",
-    "answer": "tried",
-    "after": "(I've tried)"
   }
 ]
 };
@@ -1182,6 +1182,8 @@ function startLoop(){
 
         try{
           player.pauseVideo();
+          player.seekTo(activeCue.pauseAt, true);
+          player.pauseVideo();
         }catch(e){}
 
         // Keep the video covered so YouTube captions cannot reveal the answer.
@@ -1222,7 +1224,15 @@ function startLoop(){
       return;
     }
 
-    if(cueIndex >= CONFIG.cues.length) return;
+    if(cueIndex >= CONFIG.cues.length){
+      if(t >= 348){
+        state.textContent = "Song complete";
+        currentLine.innerHTML = "";
+        captionMask.classList.remove("show");
+        enableTools(false);
+      }
+      return;
+    }
 
     const cue = CONFIG.cues[cueIndex];
     const secondsLeft = cue.pauseAt - t;
@@ -1367,35 +1377,40 @@ function replayCue(){
 
   const cue = CONFIG.cues[cueIndex];
 
-  // Keep the challenge active and keep the exact gap sentence on screen.
   cueOpen = true;
   replayingCue = true;
 
-  // Hide the YouTube image/captions/loading spinner while replaying.
   captionMask.classList.add("show");
 
   state.textContent =
-    "Challenge replay · Listen";
+    `Challenge ${cueIndex + 1}/${CONFIG.cues.length} · Repeat`;
 
   feedback.className = "feedback neutral";
-  feedback.textContent =
-    "Listen to the same line again, then complete the gap.";
+  feedback.textContent = "Listen again, then answer.";
 
-  // Do NOT call showListening() here.
-  // That would replace the gap sentence with generic listening text.
+  // Keep the same challenge input visible.
+  renderLiveChallenge(cue, false);
 
   checkBtn.disabled = false;
-  replayBtn.disabled = true;
+  replayBtn.disabled = false;
   hintBtn.disabled = false;
   skipBtn.disabled = false;
 
-  player.seekTo(cue.replayFrom, true);
+  // ONE click: seek and start immediately.
+  try{
+    player.pauseVideo();
+    player.seekTo(cue.replayFrom, true);
+    player.playVideo();
+  }catch(e){}
 
+  // Some mobile/browser YouTube embeds need one tiny fallback after seek settles.
   setTimeout(() => {
     try{
-      player.playVideo();
+      if(player.getPlayerState() !== 1){
+        player.playVideo();
+      }
     }catch(e){}
-  }, 300);
+  }, 120);
 }
 
 function giveHint(){
