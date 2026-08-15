@@ -437,6 +437,78 @@ button{cursor:pointer}
   max-width:210px;
 }
 
+
+.end-screen{
+  position:absolute;
+  inset:0;
+  z-index:9;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:
+    linear-gradient(145deg,rgba(7,24,40,.96),rgba(11,47,82,.97));
+  color:#fff;
+  text-align:center;
+}
+.end-screen.show{
+  display:flex;
+}
+.end-card{
+  width:min(520px,92%);
+  padding:26px 24px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:18px;
+  background:rgba(255,255,255,.07);
+  box-shadow:0 20px 60px rgba(0,0,0,.22);
+  backdrop-filter:blur(8px);
+}
+.end-kicker{
+  color:var(--gold);
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+.end-card h2{
+  margin:7px 0 7px;
+  color:#fff;
+  font-size:clamp(27px,3.6vw,40px);
+  line-height:1.05;
+}
+.end-card p{
+  margin:0 auto 18px;
+  max-width:420px;
+  color:rgba(255,255,255,.76);
+  font-size:13px;
+  line-height:1.5;
+}
+.end-actions{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.end-actions .btn{
+  min-height:40px;
+}
+.end-ai-link{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:40px;
+  padding:0 14px;
+  border-radius:9px;
+  background:#fff;
+  color:var(--navy);
+  border:1px solid rgba(255,255,255,.2);
+  font-weight:900;
+  text-decoration:none;
+}
+.end-ai-link:hover{
+  background:#f7f3e9;
+}
+
 </style>
 
 </head>
@@ -465,6 +537,21 @@ button{cursor:pointer}
     <div class="video-area">
       <div class="video">
         <div id="player"></div>
+
+        <div class="end-screen" id="endScreen" aria-hidden="true">
+          <div class="end-card">
+            <div class="end-kicker">Apex Song Challenge</div>
+            <h2>Nice work.</h2>
+            <p>You finished the song. Listen again or continue practising your English with Apex AI Assistant.</p>
+            <div class="end-actions">
+              <button class="btn btn-primary" id="endReplayBtn">Listen Again</button>
+              <a class="end-ai-link" href="https://www.apexenglish.net/ingilizce-asistan" target="_blank" rel="noopener">
+                Practice with AI Assistant
+              </a>
+            </div>
+          </div>
+        </div>
+
         <div class="caption-mask" id="captionMask" aria-hidden="true"></div>
 
 
@@ -918,11 +1005,30 @@ const pauseOverlay = $("pauseOverlay");
 const resumeBtn = $("resumeBtn");
 const restartBtn = $("restartBtn");
 const captionMask = $("captionMask");
+const endScreen = $("endScreen");
+const endReplayBtn = $("endReplayBtn");
 
 function fmt(sec){
   const m = Math.floor(sec / 60);
   const s = Math.floor(sec % 60).toString().padStart(2,"0");
   return `${m}:${s}`;
+}
+
+function showEndScreen(){
+  endScreen.classList.add("show");
+  endScreen.setAttribute?.("aria-hidden","false");
+
+  captionMask.classList.remove("show");
+  enableTools(false);
+
+  state.textContent = "Song complete";
+  currentLine.innerHTML = "";
+  feedback.textContent = "";
+}
+
+function hideEndScreen(){
+  endScreen.classList.remove("show");
+  endScreen.setAttribute?.("aria-hidden","true");
 }
 
 function updateStats(){
@@ -1133,12 +1239,16 @@ window.onYouTubeIframeAPIReady = function(){
         } catch (e) {}
       },
 
-      onStateChange: () => {
+      onStateChange: event => {
         // Re-apply caption suppression if YouTube reloads modules.
         try {
           player.unloadModule("captions");
           player.unloadModule("cc");
         } catch (e) {}
+
+        if(event.data === 0){
+          showEndScreen();
+        }
       },
 
       onError: event => {
@@ -1225,11 +1335,10 @@ function startLoop(){
     }
 
     if(cueIndex >= CONFIG.cues.length){
-      if(t >= 357.8){
-        state.textContent = "Song complete";
-        currentLine.innerHTML = "";
-        captionMask.classList.remove("show");
-        enableTools(false);
+      // Cover YouTube's final recommendation cards with our own end screen.
+      // Audio can continue underneath for the last few seconds.
+      if(t >= 358.0){
+        showEndScreen();
       }
       return;
     }
@@ -1496,6 +1605,8 @@ function resumeGame(){
 }
 
 function restart(){
+  hideEndScreen();
+
   cueIndex = 0;
   cueOpen = false;
   replayingCue = false;
@@ -1535,6 +1646,7 @@ skipBtn.addEventListener("click", skipCue);
 pauseBtn.addEventListener("click", pauseGame);
 resumeBtn.addEventListener("click", resumeGame);
 restartBtn.addEventListener("click", restart);
+endReplayBtn.addEventListener("click", restart);
 
 progress.addEventListener("input", () => {
   if(!player || cueOpen) return;
