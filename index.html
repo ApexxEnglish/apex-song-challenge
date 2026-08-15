@@ -363,14 +363,35 @@ button{cursor:pointer}
 .caption-mask.show{
   display:flex;
 }
-.caption-mask::after{
-  content:"Listen carefully";
-  color:rgba(255,255,255,.82);
-  font-size:15px;
-  font-weight:700;
-  letter-spacing:.03em;
-}
+.caption-mask::after{content:"";}
 
+
+
+.challenge-preview{
+  width:100%;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  align-items:baseline;
+  gap:.22em;
+  color:var(--navy);
+  font-weight:850;
+  font-size:clamp(23px,3vw,33px);
+  line-height:1.25;
+  letter-spacing:-.02em;
+}
+.preview-blank{
+  display:inline-block;
+  min-width:110px;
+  height:.95em;
+  border-bottom:3px solid var(--gold);
+  transform:translateY(-2px);
+}
+.gap-input{
+  width:auto;
+  min-width:110px;
+  max-width:220px;
+}
 
 </style>
 
@@ -431,7 +452,7 @@ button{cursor:pointer}
     <div class="lesson">
       <div class="lesson-head">
         <div id="state">Ready</div>
-        <div class="lesson-note">Listen → gap → replay if needed → answer</div>
+        <div class="lesson-note">Listen · answer · replay if needed</div>
       </div>
 
       <div class="lyric-window">
@@ -783,31 +804,31 @@ const CONFIG = {
     "after": ""
   },
   {
-    "lineStart": 310.0,
-    "replayFrom": 307.0,
-    "lineEndsAt": 318.5,
-    "pauseAt": 318.5,
-    "before": "Hello from the",
-    "answer": "other",
-    "after": "side (other side)"
-  },
-  {
-    "lineStart": 338.1,
-    "replayFrom": 335.5,
-    "lineEndsAt": 345.5,
-    "pauseAt": 345.5,
-    "before": "Hello from the",
-    "answer": "outside",
-    "after": "(outside)"
-  },
-  {
-    "lineStart": 356.6,
-    "replayFrom": 354.0,
-    "lineEndsAt": 365.0,
-    "pauseAt": 365.0,
-    "before": "But it don't matter, it clearly doesn't tear you apart",
+    "lineStart": 298.1,
+    "replayFrom": 295.5,
+    "lineEndsAt": 303.0,
+    "pauseAt": 303.0,
+    "before": "Ooh (lows, lows, lows, lows),",
     "answer": "anymore",
     "after": ""
+  },
+  {
+    "lineStart": 318.6,
+    "replayFrom": 316.0,
+    "lineEndsAt": 325.5,
+    "pauseAt": 325.5,
+    "before": "I must've called a",
+    "answer": "thousand",
+    "after": "times (thousand times)"
+  },
+  {
+    "lineStart": 345.6,
+    "replayFrom": 343.0,
+    "lineEndsAt": 350.5,
+    "pauseAt": 350.5,
+    "before": "At least I can say that I've",
+    "answer": "tried",
+    "after": "(I've tried)"
   }
 ]
 };
@@ -888,39 +909,45 @@ function updateListeningPanel(t){
     ? CONFIG.cues[cueIndex]
     : null;
 
-  // Never reveal the full target lyric while the challenge line is being sung.
-  // Cover the YouTube image too, so native captions cannot leak the answer.
-  if(cue && t >= cue.lineStart && t < cue.lineEndsAt){
+  // Show the actual gap sentence shortly before the target line starts.
+  // It stays visible while the student hears that line.
+  if(cue && t >= (cue.lineStart - 1.5) && t < cue.lineEndsAt){
     captionMask.classList.add("show");
-    // Keep the panel visually quiet while the target line is being sung.
-    // The student should focus on the audio; the gap appears only when the line ends.
-    currentLine.innerHTML = "";
+
+    state.textContent =
+      `Challenge ${cueIndex + 1}/${CONFIG.cues.length} · Listen`;
+
+    currentLine.innerHTML =
+      `<div class="challenge-preview">` +
+        `<span>${escapeHtml(cue.before)}</span>` +
+        `<span class="preview-blank" aria-hidden="true"></span>` +
+        `<span>${escapeHtml(cue.after)}</span>` +
+      `</div>`;
+
     return;
   }
 
   captionMask.classList.remove("show");
+  state.textContent = "Playing";
 
   const line = getTimedLine(t);
 
   if(line){
     currentLine.textContent = line.text;
   }else{
-    currentLine.innerHTML =
-      `<div class="listen-state"><small>Listening</small>Follow the song — the next challenge will appear automatically.</div>`;
+    // No generic listening message between lyric lines.
+    currentLine.innerHTML = "";
   }
 }
 
 function showListening(){
   prevLine.textContent = "";
   nextLine.textContent = "";
-
-  currentLine.innerHTML =
-    `<div class="listen-state"><small>Listening</small>Follow the song — the next challenge will appear automatically.</div>`;
+  currentLine.innerHTML = "";
 
   feedback.textContent = "";
   feedback.className = "feedback neutral";
 
-  // Normal listening: do not cover the video subtitle area.
   captionMask.classList.remove("show");
 }
 
@@ -1100,7 +1127,7 @@ function openCue(){
     }, 120);
   }catch(e){}
 
-  state.textContent = `Gap ${cueIndex + 1} of ${CONFIG.cues.length} — answer from what you heard`;
+  state.textContent = `Challenge ${cueIndex + 1}/${CONFIG.cues.length} · Answer`;
 
   prevLine.textContent = "";
   nextLine.textContent = "";
@@ -1108,7 +1135,7 @@ function openCue(){
   currentLine.innerHTML =
     `<span>${cue.before} </span>` +
     `<span class="gap hide" id="gapView">_____</span>` +
-    `<input class="inline-input show" id="gapInput" class="gap-input" autocomplete="off" spellcheck="false" aria-label="Missing word">` +
+    `<input class="gap-input" id="gapInput" size="${Math.max(5, Math.min(12, cue.answer.length + 2))}" autocomplete="off" spellcheck="false" aria-label="Missing word">` +
     `<span> ${cue.after}</span>`;
 
   enableTools(true);
@@ -1227,7 +1254,7 @@ function replayCue(){
   captionMask.classList.add("show");
 
   state.textContent =
-    "Listen again — the same gap stays on screen";
+    "Challenge replay · Listen";
 
   feedback.className = "feedback neutral";
   feedback.textContent =
