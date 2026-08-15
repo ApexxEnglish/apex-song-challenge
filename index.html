@@ -726,42 +726,42 @@ const CONFIG = {
   },
   {
     "start": 302.0,
-    "end": 311.0,
+    "end": 310.5,
     "text": "Hello from the other side (other side)"
   },
   {
-    "start": 311.0,
-    "end": 315.0,
+    "start": 310.6,
+    "end": 317.5,
     "text": "I must've called a thousand times (thousand times)"
   },
   {
-    "start": 315.0,
-    "end": 319.0,
+    "start": 317.6,
+    "end": 324.5,
     "text": "To tell you I'm sorry for everything that I've done"
   },
   {
-    "start": 319.0,
-    "end": 322.0,
+    "start": 324.6,
+    "end": 330.0,
     "text": "But when I call, you never seem to be home"
   },
   {
-    "start": 322.0,
-    "end": 333.0,
+    "start": 330.1,
+    "end": 337.5,
     "text": "Hello from the outside (outside)"
   },
   {
-    "start": 333.0,
-    "end": 336.0,
+    "start": 337.6,
+    "end": 342.5,
     "text": "At least I can say that I've tried (I've tried)"
   },
   {
-    "start": 336.0,
-    "end": 343.0,
+    "start": 342.6,
+    "end": 348.5,
     "text": "To tell you I'm sorry for breaking your heart"
   },
   {
-    "start": 343.0,
-    "end": 348.0,
+    "start": 348.6,
+    "end": 357.0,
     "text": "But it don't matter, it clearly doesn't tear you apart anymore"
   }
 ],
@@ -857,19 +857,19 @@ const CONFIG = {
     "after": "(lows, lows, lows, lows)"
   },
   {
-    "lineStart": 322.0,
-    "replayFrom": 319.5,
-    "lineEndsAt": 333.0,
-    "pauseAt": 333.8,
+    "lineStart": 330.1,
+    "replayFrom": 327.5,
+    "lineEndsAt": 337.5,
+    "pauseAt": 338.3,
     "before": "Hello from the",
     "answer": "outside",
     "after": "(outside)"
   },
   {
-    "lineStart": 343.0,
-    "replayFrom": 340.5,
-    "lineEndsAt": 348.0,
-    "pauseAt": 348.8,
+    "lineStart": 348.6,
+    "replayFrom": 346.0,
+    "lineEndsAt": 357.0,
+    "pauseAt": 357.8,
     "before": "But it don't matter, it clearly doesn't tear you apart",
     "answer": "anymore",
     "after": ""
@@ -1225,7 +1225,7 @@ function startLoop(){
     }
 
     if(cueIndex >= CONFIG.cues.length){
-      if(t >= 348){
+      if(t >= 357.8){
         state.textContent = "Song complete";
         currentLine.innerHTML = "";
         captionMask.classList.remove("show");
