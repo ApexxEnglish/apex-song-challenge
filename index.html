@@ -496,7 +496,7 @@ button{cursor:pointer}
     <div class="lesson">
       <div class="lesson-head">
         <div id="state">Ready</div>
-        <div class="lesson-note">Lyrics · listen · answer · replay if needed</div>
+        <div class="lesson-note">Type while listening · Check once · auto-continue</div>
       </div>
 
       <div class="lyric-window">
@@ -770,7 +770,7 @@ const CONFIG = {
     "lineStart": 83.0,
     "replayFrom": 80.0,
     "lineEndsAt": 91.0,
-    "pauseAt": 91.0,
+    "pauseAt": 91.8,
     "before": "I was",
     "answer": "wondering",
     "after": "if after all these years you'd like to meet"
@@ -779,7 +779,7 @@ const CONFIG = {
     "lineStart": 110.1,
     "replayFrom": 107.5,
     "lineEndsAt": 116.5,
-    "pauseAt": 116.5,
+    "pauseAt": 117.3,
     "before": "I'm in California",
     "answer": "dreaming",
     "after": "about who we used to be"
@@ -788,7 +788,7 @@ const CONFIG = {
     "lineStart": 133.6,
     "replayFrom": 131.0,
     "lineEndsAt": 138.5,
-    "pauseAt": 138.5,
+    "pauseAt": 139.3,
     "before": "And a",
     "answer": "million",
     "after": "miles"
@@ -797,7 +797,7 @@ const CONFIG = {
     "lineStart": 153.6,
     "replayFrom": 151.0,
     "lineEndsAt": 160.0,
-    "pauseAt": 160.0,
+    "pauseAt": 160.8,
     "before": "To tell you I'm",
     "answer": "sorry",
     "after": "for everything that I've done"
@@ -806,7 +806,7 @@ const CONFIG = {
     "lineStart": 178.6,
     "replayFrom": 176.0,
     "lineEndsAt": 186.5,
-    "pauseAt": 186.5,
+    "pauseAt": 187.3,
     "before": "To tell you I'm sorry for",
     "answer": "breaking",
     "after": "your heart"
@@ -815,7 +815,7 @@ const CONFIG = {
     "lineStart": 201.1,
     "replayFrom": 198.5,
     "lineEndsAt": 208.5,
-    "pauseAt": 208.5,
+    "pauseAt": 209.3,
     "before": "It's so",
     "answer": "typical",
     "after": "of me to talk about myself, I'm sorry"
@@ -824,7 +824,7 @@ const CONFIG = {
     "lineStart": 224.6,
     "replayFrom": 222.0,
     "lineEndsAt": 228.0,
-    "pauseAt": 228.0,
+    "pauseAt": 228.8,
     "before": "Are running out of",
     "answer": "time",
     "after": ""
@@ -833,7 +833,7 @@ const CONFIG = {
     "lineStart": 245.6,
     "replayFrom": 243.0,
     "lineEndsAt": 252.5,
-    "pauseAt": 252.5,
+    "pauseAt": 253.3,
     "before": "To tell you I'm sorry for everything that I've",
     "answer": "done",
     "after": ""
@@ -842,7 +842,7 @@ const CONFIG = {
     "lineStart": 270.6,
     "replayFrom": 268.0,
     "lineEndsAt": 276.5,
-    "pauseAt": 276.5,
+    "pauseAt": 277.3,
     "before": "To tell you I'm sorry for breaking your",
     "answer": "heart",
     "after": ""
@@ -851,7 +851,7 @@ const CONFIG = {
     "lineStart": 298.1,
     "replayFrom": 295.5,
     "lineEndsAt": 303.0,
-    "pauseAt": 303.0,
+    "pauseAt": 303.8,
     "before": "Ooh (lows, lows, lows, lows),",
     "answer": "anymore",
     "after": ""
@@ -860,7 +860,7 @@ const CONFIG = {
     "lineStart": 318.6,
     "replayFrom": 316.0,
     "lineEndsAt": 325.5,
-    "pauseAt": 325.5,
+    "pauseAt": 326.3,
     "before": "I must've called a",
     "answer": "thousand",
     "after": "times (thousand times)"
@@ -869,7 +869,7 @@ const CONFIG = {
     "lineStart": 345.6,
     "replayFrom": 343.0,
     "lineEndsAt": 350.5,
-    "pauseAt": 350.5,
+    "pauseAt": 351.3,
     "before": "At least I can say that I've",
     "answer": "tried",
     "after": "(I've tried)"
@@ -975,7 +975,10 @@ function renderLiveChallenge(cue, focus=false){
 
     if(input){
       input.addEventListener("keydown", event => {
-        if(event.key === "Enter" && cueOpen){
+        if(
+          event.key === "Enter" &&
+          (cueOpen || liveCueIndex === cueIndex)
+        ){
           event.preventDefault();
           checkAnswer();
         }
@@ -998,13 +1001,23 @@ function updateListeningPanel(t){
 
   // As soon as the singer starts the target line, show the actual challenge.
   // It is the SAME input that remains after the line finishes.
-  if(cue && t >= cue.lineStart && t < cue.lineEndsAt){
+  if(cue && t >= cue.lineStart && t < cue.pauseAt){
     captionMask.classList.add("show");
 
     state.textContent =
-      `Challenge ${cueIndex + 1}/${CONFIG.cues.length} · Listen`;
+      `Challenge ${cueIndex + 1}/${CONFIG.cues.length} · Listen & type`;
 
     renderLiveChallenge(cue, false);
+
+    // Student can type and press Check WHILE the song is still playing.
+    checkBtn.disabled = false;
+    checkBtn.textContent = "Check";
+    checkBtn.dataset.action = "check";
+
+    // These become available only if the line ends without a correct answer.
+    replayBtn.disabled = true;
+    hintBtn.disabled = true;
+    skipBtn.disabled = true;
 
     feedback.textContent = "";
     feedback.className = "feedback neutral";
@@ -1012,6 +1025,7 @@ function updateListeningPanel(t){
   }
 
   captionMask.classList.remove("show");
+  enableTools(false);
   state.textContent = "Playing";
 
   const line = getTimedLine(t);
@@ -1162,7 +1176,7 @@ function startLoop(){
 
       const activeCue = CONFIG.cues[cueIndex];
 
-      if(activeCue && t >= activeCue.lineEndsAt){
+      if(activeCue && t >= activeCue.pauseAt){
 
         replayingCue = false;
 
@@ -1200,8 +1214,8 @@ function startLoop(){
         }
 
         const activeCue = CONFIG.cues[cueIndex];
-        if(activeCue && t > activeCue.lineEndsAt + 0.08){
-          player.seekTo(activeCue.lineEndsAt, true);
+        if(activeCue && t > activeCue.pauseAt + 0.20){
+          player.seekTo(activeCue.pauseAt, true);
           player.pauseVideo();
         }
       }catch(e){}
@@ -1232,26 +1246,19 @@ function openCue(){
   replayingCue = false;
   captionMask.classList.add("show");
 
-  // Hard stop exactly at the end of the target line.
+  // The loop calls this only AFTER pauseAt, which is 0.8s after lineEndsAt.
+  // Do not seek backwards here: that used to cut off the final word.
   try{
-    player.seekTo(cue.lineEndsAt ?? cue.pauseAt, true);
     player.pauseVideo();
-
-    setTimeout(() => {
-      try{
-        player.seekTo(cue.lineEndsAt ?? cue.pauseAt, true);
-        player.pauseVideo();
-      }catch(e){}
-    }, 120);
   }catch(e){}
 
   state.textContent =
     `Challenge ${cueIndex + 1}/${CONFIG.cues.length} · Answer`;
 
-  // Preserve anything the student already typed while listening.
+  // Keep the SAME input and anything already typed while listening.
   renderLiveChallenge(cue, true);
 
-  // IMPORTANT: these are the original working V8.2 controls.
+  // Once paused, all challenge tools are available.
   enableTools(true);
   checkBtn.textContent = "Check";
   checkBtn.dataset.action = "check";
@@ -1265,26 +1272,12 @@ function normalize(value){
 }
 
 function checkAnswer(){
-  if(!cueOpen) return;
+  const liveActive =
+    liveCueIndex === cueIndex &&
+    !!document.getElementById("gapInput");
 
-  if(checkBtn.dataset.action === "continue"){
-    checkBtn.dataset.action = "check";
-    checkBtn.textContent = "Check";
-
-    cueIndex++;
-    cueOpen = false;
-    replayingCue = false;
-    liveCueIndex = -1;
-    hints = 0;
-    captionMask.classList.remove("show");
-
-    enableTools(false);
-    state.textContent = "Playing";
-    showListening();
-
-    player.playVideo();
-    return;
-  }
+  if(!cueOpen && !liveActive) return;
+  if(cueIndex >= CONFIG.cues.length) return;
 
   const cue = CONFIG.cues[cueIndex];
   const input = document.getElementById("gapInput");
@@ -1299,37 +1292,61 @@ function checkAnswer(){
     return;
   }
 
-  if(value === cue.answer){
+  if(value === normalize(cue.answer)){
+    const wasPaused = cueOpen;
+
     hits++;
     solved++;
 
-    const base = hints === 0 ? 100 : Math.max(40, 100 - (hints * 25));
+    const base =
+      hints === 0
+        ? 100
+        : Math.max(40, 100 - (hints * 25));
 
     score += Math.round(base * bonus);
-
     bonus = Math.min(4, bonus + 1);
 
     currentLine.innerHTML =
-      `<span>${cue.before} </span>` +
-      `<span class="gap">${cue.answer}</span>` +
-      `<span> ${cue.after}</span>`;
+      `<span>${escapeHtml(cue.before)} </span>` +
+      `<span class="gap">${escapeHtml(cue.answer)}</span>` +
+      `<span> ${escapeHtml(cue.after)}</span>`;
 
-    replayBtn.disabled = true;
-    hintBtn.disabled = true;
-    skipBtn.disabled = true;
-
-    checkBtn.disabled = false;
-    checkBtn.textContent = "Continue";
-    checkBtn.dataset.action = "continue";
-
-    const inputAfterCorrect = document.getElementById("gapInput");
-    if(inputAfterCorrect) inputAfterCorrect.disabled = true;
-
-    feedback.textContent = "";
     feedback.className = "feedback good";
+    feedback.textContent = "Correct.";
+    state.textContent = "Correct";
 
-    state.textContent = "Correct — press Continue";
+    // Finish this challenge immediately. No separate Continue click.
+    cueIndex++;
+    cueOpen = false;
+    replayingCue = false;
+    liveCueIndex = -1;
+    hints = 0;
+
+    captionMask.classList.remove("show");
+    enableTools(false);
     updateStats();
+
+    if(wasPaused){
+      // Let the student see "Correct" briefly, then continue automatically.
+      setTimeout(() => {
+        feedback.textContent = "";
+        state.textContent = "Playing";
+        showListening();
+
+        try{
+          player.playVideo();
+        }catch(e){}
+      }, 750);
+    }else{
+      // Correct answer while the song is still playing:
+      // do NOT interrupt the music.
+      setTimeout(() => {
+        if(!cueOpen){
+          feedback.textContent = "";
+          state.textContent = "Playing";
+        }
+      }, 650);
+    }
 
   }else{
     fails++;
@@ -1412,6 +1429,9 @@ function skipCue(){
 
   bonus = 1;
 
+  feedback.className = "feedback neutral";
+  feedback.textContent = "Answer shown — continuing shortly.";
+
   enableTools(false);
   checkBtn.textContent = "Check";
   checkBtn.dataset.action = "check";
@@ -1430,7 +1450,7 @@ function skipCue(){
     showListening();
 
     player.playVideo();
-  }, 360);
+  }, 1200);
 }
 
 function pauseGame(){
