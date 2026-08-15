@@ -892,8 +892,9 @@ function updateListeningPanel(t){
   // Cover the YouTube image too, so native captions cannot leak the answer.
   if(cue && t >= cue.lineStart && t < cue.lineEndsAt){
     captionMask.classList.add("show");
-    currentLine.innerHTML =
-      `<div class="listen-state"><small>Challenge coming</small>Listen carefully — this line will become a gap.</div>`;
+    // Keep the panel visually quiet while the target line is being sung.
+    // The student should focus on the audio; the gap appears only when the line ends.
+    currentLine.innerHTML = "";
     return;
   }
 
