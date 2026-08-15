@@ -372,35 +372,6 @@ button{cursor:pointer}
 }
 
 
-.subtitle-overlay{
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:14px;
-  z-index:5;
-  display:none;
-  justify-content:center;
-  padding:0 16px;
-  pointer-events:none;
-}
-.subtitle-overlay.show{display:flex}
-.subtitle-overlay span{
-  max-width:90%;
-  padding:6px 14px;
-  border-radius:8px;
-  background:rgba(5,18,31,.74);
-  color:#fff;
-  font-size:15px;
-  font-weight:700;
-  line-height:1.4;
-  text-align:center;
-  box-shadow:0 6px 20px rgba(0,0,0,.18);
-}
-.subtitle-overlay.gap-mode span{
-  background:rgba(5,18,31,.90);
-  color:#ffe9b8;
-}
-
 </style>
 
 </head>
@@ -429,9 +400,6 @@ button{cursor:pointer}
     <div class="video-area">
       <div class="video">
         <div id="player"></div>
-        <div class="subtitle-overlay" id="subtitleOverlay">
-          <span id="subtitleText"></span>
-        </div>
         <div class="caption-mask" id="captionMask" aria-hidden="true"></div>
 
 
@@ -485,7 +453,7 @@ button{cursor:pointer}
     <div class="footer-note">
       <span>Full line first</span>
       <span>·</span>
-      <span>Gap stays visible during replay</span>
+      <span>Gap stays visible below during replay</span>
       <span>·</span>
       <span>9 spaced gaps</span>
     </div>
@@ -500,12 +468,6 @@ const CONFIG = {
     The engine is built for a licensed synced-lyrics feed.
     For this prototype, only short challenge snippets are stored locally.
   */
-  // Add licensed or user-provided timed subtitle lines here.
-  // Do not put challenge target lines here if you do not want the answer visible beforehand.
-  lines: [
-    // { start: 70.0, end: 76.0, text: "Licensed subtitle line here." }
-  ],
-
   cues: [
     {
         "replayFrom": 83.0,
@@ -622,8 +584,6 @@ const pauseOverlay = $("pauseOverlay");
 const resumeBtn = $("resumeBtn");
 const restartBtn = $("restartBtn");
 const captionMask = $("captionMask");
-const subtitleOverlay = $("subtitleOverlay");
-const subtitleText = $("subtitleText");
 
 function fmt(sec){
   const m = Math.floor(sec / 60);
@@ -644,29 +604,6 @@ function enableTools(on){
   hintBtn.disabled = !on;
   skipBtn.disabled = !on;
   checkBtn.disabled = !on;
-}
-
-function currentLineFor(t){
-  for(const line of (CONFIG.lines || [])){
-    if(t >= line.start && t < line.end) return line;
-  }
-  return null;
-}
-
-function updateSubtitleForTime(t){
-  if(cueOpen) return;
-
-  const line = currentLineFor(t);
-
-  if(line){
-    subtitleText.textContent = line.text;
-    subtitleOverlay.classList.add("show");
-    subtitleOverlay.classList.remove("gap-mode");
-  }else{
-    subtitleOverlay.classList.remove("show");
-    subtitleOverlay.classList.remove("gap-mode");
-    subtitleText.textContent = "";
-  }
 }
 
 function showListening(){
@@ -706,7 +643,7 @@ window.onYouTubeIframeAPIReady = function(){
       controls: 0,
       disablekb: 1,
 
-      // YouTube native captions stay off; Apex renders its own timed subtitle layer.
+      // YouTube native captions stay off.
       cc_load_policy: 0,
       hl: "en"
     },
@@ -769,10 +706,6 @@ function startLoop(){
       );
     }
 
-    if(!cueOpen){
-      updateSubtitleForTime(t);
-    }
-
     if(cueOpen && replayingCue){
 
       const activeCue = CONFIG.cues[cueIndex];
@@ -787,9 +720,6 @@ function startLoop(){
 
         // Keep the video covered so YouTube captions cannot reveal the answer.
         captionMask.classList.add("show");
-        subtitleOverlay.classList.add("show","gap-mode");
-        subtitleText.textContent =
-          `${activeCue.before} _____ ${activeCue.after}`.replace(/\s+/g," ").trim();
 
         state.textContent =
           `Gap ${cueIndex + 1} of ${CONFIG.cues.length}`;
@@ -850,10 +780,6 @@ function openCue(){
   replayingCue = false;
   captionMask.classList.add("show");
 
-  subtitleOverlay.classList.add("show","gap-mode");
-  subtitleText.textContent =
-    `${cue.before} _____ ${cue.after}`.replace(/\s+/g," ").trim();
-
   // Hard stop exactly on the challenge boundary.
   try{
     player.seekTo(cue.lineEndsAt ?? cue.pauseAt, true);
@@ -912,8 +838,6 @@ function checkAnswer(){
     replayingCue = false;
     hints = 0;
     captionMask.classList.remove("show");
-    subtitleOverlay.classList.remove("show","gap-mode");
-    subtitleText.textContent = "";
 
     enableTools(false);
     state.textContent = "Playing";
@@ -950,10 +874,6 @@ function checkAnswer(){
       `<span>${cue.before} </span>` +
       `<span class="gap">${cue.answer}</span>` +
       `<span> ${cue.after}</span>`;
-
-    subtitleOverlay.classList.add("show","gap-mode");
-    subtitleText.textContent =
-      `${cue.before} ${cue.answer} ${cue.after}`.replace(/\s+/g," ").trim();
 
     replayBtn.disabled = true;
     hintBtn.disabled = true;
@@ -997,10 +917,6 @@ function replayCue(){
 
   // Hide the YouTube image/captions/loading spinner while replaying.
   captionMask.classList.add("show");
-
-  subtitleOverlay.classList.add("show","gap-mode");
-  subtitleText.textContent =
-    `${cue.before} _____ ${cue.after}`.replace(/\s+/g," ").trim();
 
   state.textContent =
     "Listening again — complete the same gap";
@@ -1055,10 +971,6 @@ function skipCue(){
     `<span class="gap">${cue.answer}</span>` +
     `<span> ${cue.after}</span>`;
 
-  subtitleOverlay.classList.add("show","gap-mode");
-  subtitleText.textContent =
-    `${cue.before} ${cue.answer} ${cue.after}`.replace(/\s+/g," ").trim();
-
   bonus = 1;
 
   enableTools(false);
@@ -1072,8 +984,6 @@ function skipCue(){
     replayingCue = false;
     hints = 0;
     captionMask.classList.remove("show");
-    subtitleOverlay.classList.remove("show","gap-mode");
-    subtitleText.textContent = "";
 
     state.textContent = "Playing";
 
@@ -1115,8 +1025,6 @@ function restart(){
   cueOpen = false;
   replayingCue = false;
   captionMask.classList.remove("show");
-  subtitleOverlay.classList.remove("show","gap-mode");
-  subtitleText.textContent = "";
   solved = 0;
 
   hits = 0;
