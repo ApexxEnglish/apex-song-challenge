@@ -1,0 +1,70 @@
+<!doctype html><meta charset="utf-8"><title>Loading A Thousand Years…</title><style>html,body{margin:0;background:#fff;font-family:Arial,sans-serif}#l{min-height:100vh;display:grid;place-items:center;color:#0b2f52}</style><div id="l">Loading Apex Song Challenge…</div><script>
+(async()=>{
+try{
+let s=await (await fetch("../index.html",{cache:"no-store"})).text();
+const cfg={"videoId":"rtOvBOTyX00","approxDuration":289,"lines":[{"start":20.73,"end":26.5,"text":"Heart beats fast, colors and promises"},{"start":29.42,"end":38.65,"text":"How to be brave? How can I love when I'm afraid to fall?"},{"start":39.88,"end":44.75,"text":"But watching you stand alone"},{"start":45.41,"end":51.52,"text":"All of my doubt suddenly goes away somehow"},{"start":54.24,"end":59.85,"text":"One step closer"},{"start":61.43,"end":67.11,"text":"I have died every day waiting for you"},{"start":67.11,"end":71.23,"text":"Darling, don't be afraid"},{"start":71.23,"end":77.38,"text":"I have loved you for a thousand years"},{"start":77.38,"end":84.44,"text":"I'll love you for a thousand more"},{"start":90.25,"end":96.57,"text":"Time stands still, beauty in all she is"},{"start":97.45,"end":106.51,"text":"I will be brave, I will not let anything take away"},{"start":107.33,"end":112.48,"text":"What's standing in front of me"},{"start":113.37,"end":119.63,"text":"Every breath, every hour has come to this"},{"start":121.84,"end":127.88,"text":"One step closer"},{"start":128.85,"end":134.63,"text":"I have died every day waiting for you"},{"start":134.63,"end":138.72,"text":"Darling, don't be afraid"},{"start":138.72,"end":144.83,"text":"I have loved you for a thousand years"},{"start":145.1,"end":151.25,"text":"I'll love you for a thousand more"},{"start":151.25,"end":156.21,"text":"And all along, I believed I would find you"},{"start":156.21,"end":160.48,"text":"Time has brought your heart to me"},{"start":160.48,"end":166.54,"text":"I have loved you for a thousand years"},{"start":167.16,"end":174.23,"text":"I'll love you for a thousand more"},{"start":193.43,"end":199.49,"text":"One step closer"},{"start":203.75,"end":209.81,"text":"One step closer"},{"start":211.81,"end":217.67,"text":"I have died every day waiting for you"},{"start":217.67,"end":221.73,"text":"Darling, don't be afraid"},{"start":221.73,"end":227.88,"text":"I have loved you for a thousand years"},{"start":228.15,"end":234.27,"text":"I'll love you for a thousand more"},{"start":234.27,"end":239.23,"text":"And all along, I believed I would find you"},{"start":239.23,"end":243.46,"text":"Time has brought your heart to me"},{"start":243.46,"end":249.52,"text":"I have loved you for a thousand years"},{"start":250.14,"end":258.0,"text":"I'll love you for a thousand more"}],"cues":[{"lineStart":20.73,"replayFrom":18.5,"lineEndsAt":26.5,"pauseAt":26.8,"before":"Heart beats fast,","answer":"colors","after":"and promises"},{"lineStart":29.42,"replayFrom":27.2,"lineEndsAt":38.65,"pauseAt":38.95,"before":"How to be","answer":"brave","after":"? How can I love when I'm afraid to fall?"},{"lineStart":39.88,"replayFrom":37.7,"lineEndsAt":44.75,"pauseAt":45.05,"before":"But watching you stand","answer":"alone","after":""},{"lineStart":54.24,"replayFrom":52.1,"lineEndsAt":59.85,"pauseAt":60.15,"before":"One step","answer":"closer","after":""},{"lineStart":61.43,"replayFrom":59.2,"lineEndsAt":67.11,"pauseAt":67.41,"before":"I have died every day","answer":"waiting","after":"for you"},{"lineStart":67.11,"replayFrom":65.0,"lineEndsAt":71.23,"pauseAt":71.53,"before":"Darling, don't be","answer":"afraid","after":""},{"lineStart":71.23,"replayFrom":69.0,"lineEndsAt":77.38,"pauseAt":77.68,"before":"I have loved you for a","answer":"thousand","after":"years"},{"lineStart":90.25,"replayFrom":88.0,"lineEndsAt":96.57,"pauseAt":96.87,"before":"Time stands still,","answer":"beauty","after":"in all she is"},{"lineStart":113.37,"replayFrom":111.1,"lineEndsAt":119.63,"pauseAt":119.93,"before":"Every","answer":"breath","after":", every hour has come to this"},{"lineStart":151.25,"replayFrom":149.0,"lineEndsAt":156.21,"pauseAt":156.51,"before":"And all along, I believed I would","answer":"find","after":"you"},{"lineStart":239.23,"replayFrom":237.0,"lineEndsAt":243.46,"pauseAt":243.76,"before":"Time has brought your","answer":"heart","after":"to me"},{"lineStart":250.14,"replayFrom":247.9,"lineEndsAt":258.0,"pauseAt":258.3,"before":"I'll love you for a thousand","answer":"more","after":""}]};
+const cfgText="const CONFIG = "+JSON.stringify(cfg,null,2)+";";
+s=s.replace(/<title>[\s\S]*?<\/title>/,'<title>Apex Song Challenge — Christina Perri A Thousand Years · A1–A2</title>');
+s=s.replace(/<meta name="description" content="[^"]*">/,'<meta name="description" content="Apex English Song Challenge — Christina Perri A Thousand Years A1–A2 listening practice.">');
+s=s.replaceAll("YQHsXMglC9A","rtOvBOTyX00");
+s=s.replace('url("https://i.ytimg.com/vi/rtOvBOTyX00/maxresdefault.jpg")','url("https://i.ytimg.com/vi/rtOvBOTyX00/hqdefault.jpg")');
+s=s.replace("<h1>Hello</h1>","<h1>A Thousand Years</h1>");
+s=s.replace('max="367"','max="289"');
+s=s.replace("9 spaced gaps","12 spaced gaps · A1–A2");
+s=s.replace(/const CONFIG = \{[\s\S]*?\n\};\n\nconst CUE_END_GRACE/,cfgText+"\n\nconst CUE_END_GRACE");
+s=s.replace("const CUE_END_GRACE = 0.8;","const CUE_END_GRACE = 0.25;");
+s=s.replace("if(t >= 358.0){","if(t >= 284.5){");
+s=s.replace("Type while listening · Check once · Repeat with one tap","Type while listening · Check after the line · Repeat with one tap");
+
+s=s.replace(
+`    // Student can type and press Check WHILE the song is still playing.
+    checkBtn.disabled = false;`,
+`    // Student may type while listening, but submission waits until the line ends.
+    // This keeps early typing intact and prevents the challenge from advancing early.
+    checkBtn.disabled = true;`
+);
+
+s=s.replace(
+`    if(!cueOpen){
+      updateListeningPanel(t);
+    }
+
+    if(cueOpen && replayingCue){`,
+`    // IMPORTANT: pause/open the cue BEFORE updateListeningPanel can replace
+    // the live input. This preserves anything the student typed early.
+    if(!cueOpen && cueIndex < CONFIG.cues.length){
+      const pendingCue = CONFIG.cues[cueIndex];
+      if(t >= pendingCue.pauseAt){
+        openCue();
+        return;
+      }
+    }
+
+    if(!cueOpen){
+      updateListeningPanel(t);
+    }
+
+    if(cueOpen && replayingCue){`
+);
+
+s=s.replace(
+`  const value = normalize(input.value);
+
+  if(!value){`,
+`  const value = normalize(input.value);
+
+  // Enter/Check before the vocal line finishes must NEVER clear or submit
+  // the student's answer. Keep the typed value and wait for the pause.
+  if(!cueOpen){
+    feedback.className = "feedback neutral";
+    feedback.textContent = "Keep listening — your answer is saved.";
+    return;
+  }
+
+  if(!value){`
+);
+
+document.open();document.write(s);document.close();
+}catch(e){document.getElementById("l").textContent="Challenge could not load.";console.error(e);}
+})();
+</script>
