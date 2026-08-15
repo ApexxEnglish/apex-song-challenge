@@ -714,6 +714,14 @@ window.onYouTubeIframeAPIReady = function(){
     events: {
       onReady: event => {
         facade.classList.add("hidden");
+
+        // Enable the student player controls only after YouTube is ready.
+        pauseBtn.disabled = false;
+        restartBtn.disabled = false;
+        progress.disabled = false;
+        progress.max = CONFIG.approxDuration;
+        progress.value = 0;
+
         state.textContent = "Playing";
         showListening();
         event.target.playVideo();
@@ -753,8 +761,13 @@ function startLoop(){
 
     time.textContent = fmt(t);
 
-    progress.style.width =
-      `${Math.max(0, Math.min(100, (t / CONFIG.approxDuration) * 100))}%`;
+    // <input type="range"> uses value, not CSS width, for playback position.
+    if(document.activeElement !== progress){
+      progress.value = Math.max(
+        0,
+        Math.min(CONFIG.approxDuration, t)
+      );
+    }
 
     if(!cueOpen){
       updateSubtitleForTime(t);
@@ -1078,6 +1091,7 @@ function pauseGame(){
   if(playerState === 1){
     userPaused = true;
     player.pauseVideo();
+    pauseBtn.textContent = "Resume";
     pauseOverlay.classList.add("show");
 
   }else if(userPaused){
@@ -1087,6 +1101,7 @@ function pauseGame(){
 
 function resumeGame(){
   userPaused = false;
+  pauseBtn.textContent = "Pause";
 
   pauseOverlay.classList.remove("show");
 
@@ -1111,6 +1126,7 @@ function restart(){
   bonus = 1;
 
   userPaused = false;
+  pauseBtn.textContent = "Pause";
 
   pauseOverlay.classList.remove("show");
 
@@ -1135,6 +1151,16 @@ skipBtn.addEventListener("click", skipCue);
 pauseBtn.addEventListener("click", pauseGame);
 resumeBtn.addEventListener("click", resumeGame);
 restartBtn.addEventListener("click", restart);
+
+progress.addEventListener("input", () => {
+  if(!player || cueOpen) return;
+
+  const nextTime = Number(progress.value);
+
+  if(Number.isFinite(nextTime)){
+    player.seekTo(nextTime, true);
+  }
+});
 </script>
 </body>
 </html>
