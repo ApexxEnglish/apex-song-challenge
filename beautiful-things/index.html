@@ -1,0 +1,70 @@
+<!doctype html><meta charset="utf-8"><title>Loading Beautiful Things…</title><style>html,body{margin:0;background:#fff;font-family:Arial,sans-serif}#l{min-height:100vh;display:grid;place-items:center;color:#0b2f52}</style><div id="l">Loading Apex Song Challenge…</div><script>
+(async()=>{
+try{
+let s=await (await fetch("../index.html",{cache:"no-store"})).text();
+const cfg={"videoId":"Oa_RSwwpPaA","approxDuration":193,"lines":[{"start":6.2,"end":9.8,"text":"For a while there, it was rough"},{"start":10.0,"end":13.0,"text":"But lately, I've been doin' better"},{"start":13.2,"end":17.0,"text":"Than the last four cold Decembers"},{"start":17.2,"end":19.5,"text":"I recall"},{"start":20.3,"end":23.2,"text":"And I see my family every month"},{"start":23.5,"end":26.5,"text":"I found a girl my parents love"},{"start":27.0,"end":29.8,"text":"She'll come and stay the night"},{"start":30.2,"end":34.0,"text":"And I think I might have it all"},{"start":34.5,"end":37.6,"text":"And I thank God every day"},{"start":38.0,"end":40.8,"text":"For the girl He sent my way"},{"start":41.5,"end":44.5,"text":"But I know the things He gives me"},{"start":44.8,"end":47.8,"text":"He can take away"},{"start":48.4,"end":51.5,"text":"And I hold you every night"},{"start":51.8,"end":55.4,"text":"And that's a feelin' I wanna get used to"},{"start":56.4,"end":59.8,"text":"But there's no man as terrified"},{"start":60.0,"end":64.2,"text":"As the man who stands to lose you"},{"start":65.5,"end":69.5,"text":"Oh, I hope I don't lose you"},{"start":70.0,"end":71.8,"text":"Mm"},{"start":72.3,"end":73.6,"text":"Please stay"},{"start":73.8,"end":77.3,"text":"I want you, I need you, oh, God"},{"start":77.6,"end":79.4,"text":"Don't take"},{"start":80.0,"end":86.5,"text":"These beautiful things that I've got"},{"start":87.4,"end":89.0,"text":"Please stay"},{"start":89.2,"end":92.6,"text":"I want you, I need you, oh, God"},{"start":93.0,"end":95.0,"text":"Don't take"},{"start":95.5,"end":101.5,"text":"These beautiful things that I've got"},{"start":102.0,"end":104.2,"text":"Oh"},{"start":104.5,"end":107.0,"text":"Ooh"},{"start":107.3,"end":111.5,"text":"Please don't take"},{"start":112.5,"end":115.8,"text":"I found my mind, I'm feelin' sane"},{"start":116.2,"end":119.8,"text":"It's been a while, but I'm findin' my faith"},{"start":120.2,"end":123.5,"text":"If everything's good, and it's great"},{"start":123.8,"end":127.5,"text":"Why do I sit and wait 'til it's gone?"},{"start":127.8,"end":130.5,"text":"Oh, I'll tell ya, I know I've got enough"},{"start":130.8,"end":133.5,"text":"I've got peace, and I've got love"},{"start":134.0,"end":136.8,"text":"But I'm up at night thinkin'"},{"start":137.0,"end":140.2,"text":"I just might lose it all"},{"start":141.0,"end":142.5,"text":"Please stay"},{"start":142.8,"end":146.5,"text":"I want you, I need you, oh, God"},{"start":146.8,"end":148.8,"text":"Don't take"},{"start":149.0,"end":154.5,"text":"These beautiful things that I've got"},{"start":154.8,"end":156.5,"text":"Oh"},{"start":156.8,"end":162.0,"text":"Ooh"},{"start":162.5,"end":164.2,"text":"Please stay"},{"start":165.0,"end":168.5,"text":"I want you, I need you, oh, God"},{"start":169.0,"end":171.5,"text":"I need"},{"start":172.0,"end":177.0,"text":"These beautiful things that I've got"}],"cues":[{"lineStart":6.2,"replayFrom":5.0,"lineEndsAt":9.8,"pauseAt":10.0,"before":"For a while there, it was ","answer":"rough","after":""},{"lineStart":10.0,"replayFrom":9.5,"lineEndsAt":13.0,"pauseAt":13.2,"before":"But lately, I've been doin' ","answer":"better","after":""},{"lineStart":20.3,"replayFrom":19.5,"lineEndsAt":23.2,"pauseAt":23.5,"before":"And I see my family every ","answer":"month","after":""},{"lineStart":23.5,"replayFrom":22.8,"lineEndsAt":26.5,"pauseAt":27.0,"before":"I found a girl my ","answer":"parents","after":" love"},{"lineStart":27.0,"replayFrom":26.5,"lineEndsAt":29.8,"pauseAt":30.2,"before":"She'll come and stay the ","answer":"night","after":""},{"lineStart":41.5,"replayFrom":40.5,"lineEndsAt":44.5,"pauseAt":44.8,"before":"But I know the things He ","answer":"gives","after":" me"},{"lineStart":51.8,"replayFrom":51.0,"lineEndsAt":55.4,"pauseAt":56.4,"before":"And that's a feelin' I wanna get ","answer":"used","after":" to"},{"lineStart":56.4,"replayFrom":55.8,"lineEndsAt":59.8,"pauseAt":60.0,"before":"But there's no man as ","answer":"terrified","after":""},{"lineStart":80.0,"replayFrom":79.5,"lineEndsAt":86.5,"pauseAt":87.4,"before":"These ","answer":"beautiful","after":" things that I've got"},{"lineStart":112.5,"replayFrom":111.5,"lineEndsAt":115.8,"pauseAt":116.2,"before":"I found my mind, I'm feelin' ","answer":"sane","after":""},{"lineStart":116.2,"replayFrom":115.5,"lineEndsAt":119.8,"pauseAt":120.2,"before":"It's been a while, but I'm findin' my ","answer":"faith","after":""},{"lineStart":127.8,"replayFrom":127.0,"lineEndsAt":130.5,"pauseAt":130.8,"before":"Oh, I'll tell ya, I know I've got ","answer":"enough","after":""}]};
+const cfgText="const CONFIG = "+JSON.stringify(cfg,null,2)+";";
+s=s.replace(/<title>[\s\S]*?<\/title>/,'<title>Apex Song Challenge — Benson Boone Beautiful Things · B1 Listening</title>');
+s=s.replace(/<meta name="description" content="[^"]*">/,'<meta name="description" content="Apex English Song Challenge — Benson Boone Beautiful Things B1 listening practice with inline gaps and YouTube captions disabled.">');
+s=s.replaceAll("YQHsXMglC9A","Oa_RSwwpPaA");
+s=s.replace("https://i.ytimg.com/vi/Oa_RSwwpPaA/maxresdefault.jpg","https://i.ytimg.com/vi/Oa_RSwwpPaA/hqdefault.jpg");
+s=s.replace("<h1>Hello</h1>","<h1>Beautiful Things</h1>");
+s=s.replace('max="367"','max="193"');
+s=s.replace("9 spaced gaps","12 spaced gaps · B1");
+s=s.replace(/const CONFIG = \{[\s\S]*?\n\};\n\nconst CUE_END_GRACE/,cfgText+"\n\nconst CUE_END_GRACE");
+s=s.replace("const CUE_END_GRACE = 0.8;","const CUE_END_GRACE = 0.25;");
+s=s.replace("if(t >= 358.0){","if(t >= 191.8){");
+s=s.replace("Type while listening · Check once · Repeat with one tap","Type while listening · Check after the line · Repeat with one tap");
+
+s=s.replace(
+`    // Student can type and press Check WHILE the song is still playing.
+    checkBtn.disabled = false;`,
+`    // Student may type while listening, but submission waits until the line ends.
+    // This keeps early typing intact and prevents the challenge from advancing early.
+    checkBtn.disabled = true;`
+);
+
+s=s.replace(
+`    if(!cueOpen){
+      updateListeningPanel(t);
+    }
+
+    if(cueOpen && replayingCue){`,
+`    // IMPORTANT: pause/open the cue BEFORE updateListeningPanel can replace
+    // the live input. This preserves anything the student typed early.
+    if(!cueOpen && cueIndex < CONFIG.cues.length){
+      const pendingCue = CONFIG.cues[cueIndex];
+      if(t >= pendingCue.pauseAt){
+        openCue();
+        return;
+      }
+    }
+
+    if(!cueOpen){
+      updateListeningPanel(t);
+    }
+
+    if(cueOpen && replayingCue){`
+);
+
+s=s.replace(
+`  const value = normalize(input.value);
+
+  if(!value){`,
+`  const value = normalize(input.value);
+
+  // Enter/Check before the vocal line finishes must NEVER clear or submit
+  // the student's answer. Keep the typed value and wait for the pause.
+  if(!cueOpen){
+    feedback.className = "feedback neutral";
+    feedback.textContent = "Keep listening — your answer is saved.";
+    return;
+  }
+
+  if(!value){`
+);
+
+document.open();document.write(s);document.close();
+}catch(e){document.getElementById("l").textContent="Challenge could not load.";console.error(e);}
+})();
+</script>
